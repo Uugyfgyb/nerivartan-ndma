@@ -2,7 +2,9 @@
 
 CSU Fall 2026 Case Competition《A Pernicious Manufacturing Problem》的水墨风格讲解页。沿着摘要《Find Potential Nitrosamine Contamination in Nerivartan Manufacturing》的思路，把全工艺流程、全部化学反应、确证方法和控制策略画出来。
 
-**打开方式**：双击 [index.html](index.html)。样式、脚本、三维坐标都已内嵌，不需要服务器。字体从 Google Fonts 加载，断网时退回系统字体。页面跟随系统深浅色，按电脑宽屏排版，窄屏自动退成单栏。
+**在线看**：<https://uugyfgyb.github.io/nerivartan-ndma/>
+
+**离线看**：下载 [index.html](index.html) 双击即可。样式、脚本、三维坐标都已内嵌，不需要服务器。字体从 Google Fonts 加载，断网时退回系统字体。页面跟随系统深浅色，按电脑宽屏排版，窄屏自动退成单栏。
 
 ## 十章
 
