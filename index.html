@@ -1,0 +1,1946 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="水墨风格讲解：Nerivartan 原料药里 0.52 ppm 的亚硝胺信号。全工艺流程、全部化学反应、三维分子与机理、速率曲面、确证方法与控制策略。">
+<title>一滴墨的来历 · Nerivartan 亚硝胺案</title>
+<style data-inline="ink.css">
+@import url("https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;900&display=swap");
+
+/* 水墨长卷：纸色为底，浓淡墨为主，朱砂、花青、赭石三色点染。宽屏双栏，窄屏退成单栏。 */
+:root {
+  --paper: #ecebe3;
+  --paper-deep: #e1dfd4;
+  --ink: #1b1c1a;
+  --ink-soft: #4c4e4a;
+  --ink-pale: #8b8d86;
+  --wash: rgba(27, 28, 26, .09);
+  --line: rgba(27, 28, 26, .22);
+  --hair: rgba(27, 28, 26, .12);
+  --cinnabar: #ad3324;
+  --indigo: #2b6aa6;
+  --ochre: #8a6a1c;
+  --seal-text: #f3ece0;
+  --brush: "Ma Shan Zheng", "STKaiti", "KaiTi", "Kaiti SC", serif;
+  --serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  --math: "STIX Two Math", "Cambria Math", "Latin Modern Math", "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #141615; --paper-deep: #1c1f1d; --ink: #dddcd2;
+    --ink-soft: #b1b1a7; --ink-pale: #7d7f78; --wash: rgba(221, 220, 210, .08);
+    --line: rgba(221, 220, 210, .24); --hair: rgba(221, 220, 210, .12);
+    --cinnabar: #d9583f; --indigo: #4f95d6; --ochre: #b08a2e;
+    --seal-text: #1a1412; color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.2rem; }
+body {
+  margin: 0;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .45 0 0 0 0 .42 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 60% 36rem at 88% -6rem, var(--wash), transparent 70%),
+    radial-gradient(ellipse 40% 30rem at 0% 26rem, var(--wash), transparent 70%),
+    var(--paper);
+  color: var(--ink);
+  font: 17px/1.9 var(--serif);
+}
+.scroll {
+  max-width: 1480px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 64px);
+  padding-block: clamp(1.6rem, 4vw, 3rem) 5rem;
+  display: flex; flex-direction: column;
+  gap: clamp(3rem, 6vw, 5rem);
+}
+section, header { display: flex; flex-direction: column; gap: 1.2rem; min-width: 0; }
+p { margin: 0; max-width: 44em; }
+a { color: var(--cinnabar); }
+sub, sup { font-size: .68em; line-height: 0; font-family: var(--math); }
+.chem { font-family: var(--math); white-space: nowrap; }
+strong { font-weight: 600; }
+.red { color: var(--cinnabar); }
+.blue { color: var(--indigo); }
+.ochre { color: var(--ochre); }
+.num { font-variant-numeric: tabular-nums; }
+.pale { color: var(--ink-pale); }
+button { font: inherit; color: inherit; }
+button:focus-visible, input:focus-visible, a:focus-visible, canvas:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--cinnabar); outline-offset: 3px; }
+
+/* 顶栏 */
+.tabs {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; flex-wrap: wrap; align-items: center; gap: .1rem 1.3rem;
+  padding: .5rem clamp(16px, 4vw, 64px);
+  background: var(--paper); border-bottom: 1px solid var(--line);
+}
+.tabs .brand { font-family: var(--brush); font-size: 1.5rem; line-height: 1; margin-right: auto; color: var(--ink); text-decoration: none; }
+.tabs a.t {
+  font-size: .92rem; color: var(--ink-soft); text-decoration: none;
+  border-bottom: 2px solid transparent; padding: .3rem .05rem; display: flex; align-items: baseline; gap: .35rem; white-space: nowrap;
+}
+.tabs a.t i { font-family: var(--brush); font-style: normal; font-size: 1.1rem; color: var(--ink-pale); }
+.tabs a.t:hover { color: var(--ink); }
+.tabs a.t.on { color: var(--ink); font-weight: 600; border-bottom-color: var(--cinnabar); }
+.tabs a.t.on i { color: var(--cinnabar); }
+
+/* 卷首 */
+header.top { position: relative; padding-bottom: 1.6rem; border-bottom: 1px solid var(--line); }
+header.top > * { position: relative; z-index: 1; }
+header.top > svg.hills { position: absolute; z-index: 0; right: 0; bottom: 0; width: min(54%, 680px); height: auto; pointer-events: none; }
+.hills .far { fill: var(--ink); opacity: .07; }
+.hills .mid { fill: var(--ink); opacity: .11; }
+.hills .near { fill: var(--ink); opacity: .17; }
+.hills .sun { fill: var(--cinnabar); opacity: .85; }
+.hills .drop { fill: var(--ink); opacity: .5; }
+.eyebrow { font-size: .8rem; letter-spacing: .28em; color: var(--ink-pale); text-transform: uppercase; }
+h1 { font-family: var(--brush); font-weight: 400; font-size: clamp(2.6rem, 6vw, 4.9rem); line-height: 1.12; margin: 0; letter-spacing: .02em; text-wrap: balance; }
+h1 small { display: block; font-family: var(--serif); font-size: clamp(1rem, 1.5vw, 1.2rem); letter-spacing: .12em; color: var(--ink-soft); margin-top: .7rem; }
+.lede { font-size: 1.08rem; color: var(--ink-soft); max-width: 41em; }
+
+/* 大数字 */
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.2rem 2rem; max-width: 62rem; }
+.fig { display: flex; flex-direction: column; gap: .1rem; border-top: 2px solid var(--ink); padding-top: .6rem; }
+.fig b { font-family: var(--brush); font-weight: 400; font-size: 2.9rem; line-height: 1.05; }
+.fig b small { font-family: var(--serif); font-size: .9rem; color: var(--ink-soft); margin-left: .25em; }
+.fig.key b { color: var(--cinnabar); }
+.fig span { font-size: .86rem; color: var(--ink-soft); line-height: 1.55; }
+
+/* 章节题签 */
+.head { display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; }
+.seal {
+  flex: none; width: 2.5rem; height: 2.5rem; display: grid; place-items: center;
+  background: var(--cinnabar); color: var(--seal-text);
+  font-family: var(--brush); font-size: 1.65rem; line-height: 1;
+  border-radius: 5px 3px 6px 3px; transform: rotate(-3deg);
+}
+h2 { font-family: var(--brush); font-weight: 400; font-size: clamp(1.8rem, 3vw, 2.4rem); line-height: 1.25; margin: 0; }
+.head .en { font-size: .78rem; letter-spacing: .2em; color: var(--ink-pale); text-transform: uppercase; }
+h3 { font-size: 1.04rem; font-weight: 600; margin: 0; letter-spacing: .05em; }
+h4 { font-size: .78rem; font-weight: 400; letter-spacing: .2em; color: var(--ink-pale); margin: .5rem 0 0; }
+.note { font-size: .86rem; color: var(--ink-pale); line-height: 1.7; }
+.tag { display: inline-block; font-size: .74rem; letter-spacing: .1em; line-height: 1.5; padding: 0 .5em; border: 1px solid currentColor; border-radius: 3px; white-space: nowrap; vertical-align: .1em; }
+.tag.fact { color: var(--ink); }
+.tag.infer { color: var(--indigo); }
+.tag.todo { color: var(--cinnabar); }
+.tag.mine { color: var(--ochre); }
+
+/* 主景 + 题跋 */
+.stage { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(300px, 1fr); gap: 1.2rem clamp(1.5rem, 3vw, 3rem); align-items: start; }
+.stage.even { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+.stage > div { display: flex; flex-direction: column; gap: .8rem; min-width: 0; }
+.bar { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; justify-content: space-between; }
+.bar-title { font-size: .9rem; color: var(--ink-soft); }
+.panel { display: flex; flex-direction: column; gap: .55rem; border-left: 2px solid var(--ink); padding: .2rem 0 .6rem 1.4rem; }
+.panel p, .panel li { font-size: .95rem; max-width: none; }
+.panel ul { margin: 0; padding-left: 1.15em; display: flex; flex-direction: column; gap: .25rem; }
+.panel.wide { border-left: 0; border-top: 2px solid var(--ink); padding: 1rem 0 0; display: grid; grid-template-columns: minmax(170px, .62fr) repeat(3, minmax(0, 1fr)); gap: .6rem clamp(1.5rem, 3vw, 2.8rem); align-items: start; min-height: 15rem; }
+.panel.wide > div { display: flex; flex-direction: column; gap: .45rem; min-width: 0; }
+.panel.wide h4:first-child { margin-top: 0; }
+.p-no { font-family: var(--brush); font-size: 3.4rem; line-height: 1; color: var(--cinnabar); }
+.p-no.latin { font-family: var(--math); font-size: 2.7rem; letter-spacing: .02em; }
+.p-title { font-size: 1.25rem; font-weight: 600; line-height: 1.4; }
+.p-sub { font-size: .84rem; color: var(--ink-pale); letter-spacing: .08em; }
+.p-eq { font-family: var(--math); font-size: 1.12rem; line-height: 1.7; overflow-x: auto; white-space: nowrap; padding: .1rem 0; }
+
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.chips button, .toggle {
+  font-size: .9rem; line-height: 1.2; font-variant-numeric: tabular-nums;
+  color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: .38rem .85rem; cursor: pointer;
+}
+.chips button:hover, .toggle:hover { border-color: var(--ink); }
+.chips button[aria-pressed="true"], .toggle[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.chips button i { font-family: var(--brush); font-style: normal; margin-right: .4em; opacity: .75; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.8rem clamp(1.5rem, 3vw, 3rem); }
+.card { display: flex; flex-direction: column; gap: .55rem; border-top: 2px solid var(--ink); padding-top: .9rem; min-width: 0; }
+.card p, .card li { font-size: .95rem; max-width: none; }
+.card ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: .3rem; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 1.8rem clamp(1.5rem, 3vw, 3rem); align-items: start; }
+.two > div { display: flex; flex-direction: column; gap: .9rem; min-width: 0; }
+.boxed { border: 2px solid var(--ink); border-radius: 14px 5px 16px 6px / 6px 15px 5px 14px; padding: .7rem 1.1rem; background: var(--wash); align-self: flex-start; max-width: 100%; }
+.eq { font-family: var(--math); font-size: 1.16rem; line-height: 1.6; padding: .3rem 0; overflow-x: auto; white-space: nowrap; }
+.frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.35; margin: 0 .2em; }
+.frac > span:first-child { border-bottom: 1px solid currentColor; padding: 0 .4em; }
+.frac > span:last-child { padding: 0 .4em; }
+
+.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: flex; flex-direction: column; gap: .7rem; max-width: 48em; }
+.steps li { counter-increment: s; position: relative; padding-left: 2.6rem; font-size: .97rem; }
+.steps li::before { content: counter(s, cjk-ideographic); position: absolute; left: 0; top: 0; font-family: var(--brush); font-size: 1.5rem; line-height: 1.25; color: var(--cinnabar); }
+
+.tbl-wrap { overflow-x: auto; }
+table { border-collapse: collapse; font-size: .92rem; font-variant-numeric: tabular-nums; width: 100%; }
+th, td { text-align: left; padding: .42rem 1.1rem .42rem 0; border-bottom: 1px solid var(--hair); vertical-align: top; }
+th { font-weight: 400; font-size: .78rem; letter-spacing: .12em; color: var(--ink-pale); border-bottom-color: var(--line); white-space: nowrap; }
+td.r, th.r { text-align: right; }
+#dma-table td { white-space: nowrap; }
+td.c, th.c { text-align: center; }
+
+/* 壹：两份批记录 */
+.cmp { display: grid; grid-template-columns: minmax(9em, 1.1fr) repeat(2, minmax(0, 1fr)) minmax(8em, .9fr); gap: 0 1.4rem; font-size: .95rem; }
+.cmp > div { padding: .62rem 0; border-bottom: 1px solid var(--hair); min-width: 0; }
+.cmp .h { font-size: .78rem; letter-spacing: .14em; color: var(--ink-pale); border-bottom-color: var(--line); padding-bottom: .4rem; }
+.cmp .k { color: var(--ink-soft); }
+.cmp .v { display: flex; flex-direction: column; gap: .28rem; font-variant-numeric: tabular-nums; }
+.cmp .v b { font-weight: 600; }
+.cmp .v i { display: block; height: 5px; border-radius: 0 3px 3px 0; background: var(--ink-pale); width: calc(var(--v) * 100%); min-width: 2px; }
+.cmp .v.now i { background: var(--cinnabar); }
+.cmp .v.same i { background: var(--ink-pale); }
+.cmp .d { font-size: .88rem; color: var(--ink-soft); }
+.cmp .d b { font-family: var(--brush); font-weight: 400; font-size: 1.5rem; line-height: 1; color: var(--cinnabar); margin-right: .2em; }
+.cmp .d.flat b { color: var(--ink-pale); }
+
+/* 贰：工艺长卷 */
+.flow-wrap { overflow-x: auto; margin-inline: -4px; padding-inline: 4px; }
+.flow { display: block; width: 100%; min-width: 1040px; height: auto; overflow: visible; }
+.flow text { font-family: var(--serif); fill: var(--ink-soft); font-size: 14px; }
+.flow .lbl { fill: var(--ink); font-size: 16px; font-weight: 600; text-anchor: middle; }
+.flow .sub { font-size: 12.5px; text-anchor: middle; fill: var(--ink-soft); }
+.flow .ann { font-size: 12.5px; fill: var(--ink-soft); }
+.flow .ann.hot, .flow .sub.hot { fill: var(--cinnabar); font-weight: 600; }
+.flow .no { font-family: var(--brush); font-size: 20px; fill: var(--cinnabar); text-anchor: middle; }
+.flow .pipe { fill: none; stroke: var(--ink); stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+.flow .pipe.thin { stroke-width: 1.8; stroke: var(--ink-soft); }
+.flow .pipe.loop { stroke: var(--ink-soft); stroke-width: 2.4; }
+.flow .pipe.ghost { opacity: .22; }
+.flow .ves { fill: var(--paper); stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+.flow .det { fill: none; stroke: var(--ink-soft); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.flow .liq { fill: var(--ink); opacity: .12; stroke: none; }
+.flow .mist { fill: var(--ink); opacity: .07; }
+.flow .st { cursor: pointer; }
+.flow .st:hover .ves, .flow .st:focus-visible .ves { stroke: var(--cinnabar); }
+.flow .st.on .ves { stroke: var(--cinnabar); stroke-width: 3.2; }
+.flow .st.on .lbl { fill: var(--cinnabar); }
+.flow .st .halo { fill: var(--cinnabar); opacity: 0; }
+.flow .st.on .halo { opacity: .1; }
+.flow .dim { opacity: .28; }
+.flow .flag path { fill: var(--cinnabar); }
+.flow .flag line { stroke: var(--cinnabar); stroke-width: 1.6; stroke-linecap: round; }
+.flow .flag text { fill: var(--cinnabar); font-size: 12px; font-weight: 600; }
+.flow .dot-dma { fill: var(--indigo); }
+.flow .dot-no2 { fill: var(--ochre); }
+.flow .dot-ndma { fill: var(--cinnabar); }
+.flow .dot-gas { fill: none; stroke: var(--ink-pale); stroke-width: 1.4; }
+.flow .dot-dmf { fill: var(--ink-pale); }
+.legend { display: flex; flex-wrap: wrap; gap: .3rem 1.3rem; font-size: .84rem; color: var(--ink-soft); align-items: center; }
+.legend span { white-space: nowrap; }
+.legend i { width: .72em; height: .72em; border-radius: 50%; background: var(--ink); display: inline-block; margin-right: .45em; vertical-align: -.02em; }
+.legend i.dma, .legend i.n { background: var(--indigo); }
+.legend i.no2 { background: var(--ochre); }
+.legend i.ndma, .legend i.o { background: var(--cinnabar); }
+.legend i.gas, .legend i.h { background: transparent; border: 1.5px solid var(--ink-pale); }
+.legend i.dash { width: 1.5em; height: 0; border-radius: 0; background: none; border-top: 2px dashed var(--cinnabar); vertical-align: .28em; }
+.legend i.bar { width: 1.3em; height: .34em; border-radius: 2px; vertical-align: .2em; }
+.legend i.bar.now { background: var(--cinnabar); }
+.legend i.bar.old { background: var(--ink-pale); }
+.legend i.ring { background: transparent; border: 2px solid var(--ink); }
+
+/* 三维画布 */
+.c3d { position: relative; aspect-ratio: 16 / 10.5; border: 1px solid var(--line); border-radius: 3px; background: radial-gradient(ellipse 70% 60% at 50% 46%, transparent 40%, var(--wash) 130%); overflow: hidden; }
+.c3d.tall { aspect-ratio: 16 / 12; }
+.c3d canvas { display: block; width: 100%; height: 100%; cursor: grab; touch-action: pan-y; }
+.c3d canvas.grabbing { cursor: grabbing; }
+.c3d .corner { position: absolute; left: .8rem; top: .5rem; font-size: .8rem; color: var(--ink-pale); letter-spacing: .1em; pointer-events: none; }
+.c3d .stamp { position: absolute; right: .8rem; bottom: .7rem; pointer-events: none; }
+.player { display: flex; align-items: center; gap: .9rem; }
+.player button { flex: none; width: 2.6rem; height: 2.6rem; border-radius: 50%; border: 1.5px solid var(--ink); background: transparent; cursor: pointer; font-size: .95rem; line-height: 1; }
+.player button:hover { border-color: var(--cinnabar); color: var(--cinnabar); }
+input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 1.6rem; background: transparent; cursor: pointer; margin: 0; }
+input[type="range"]::-webkit-slider-runnable-track { height: 2px; background: var(--ink); border-radius: 2px; }
+input[type="range"]::-moz-range-track { height: 2px; background: var(--ink); border-radius: 2px; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 1.05rem; height: 1.05rem; margin-top: calc(-.525rem + 1px); border-radius: 4px 2px 5px 2px; background: var(--cinnabar); border: 0; transform: rotate(-4deg); }
+input[type="range"]::-moz-range-thumb { width: 1.05rem; height: 1.05rem; border-radius: 4px 2px 5px 2px; background: var(--cinnabar); border: 0; }
+.caps { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: .1rem; }
+.caps li { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: .3rem; font-size: .93rem; color: var(--ink-pale); padding: .28rem 0; border-bottom: 1px solid var(--hair); cursor: pointer; }
+.caps li::before { content: attr(data-n); font-family: var(--brush); font-size: 1.2rem; line-height: 1.35; }
+.caps li.on { color: var(--ink); }
+.caps li.on::before { color: var(--cinnabar); }
+
+/* 叁：反应地图 */
+.map { display: block; width: 100%; height: auto; overflow: visible; }
+.map text { font-family: var(--math); fill: var(--ink); font-size: 19px; }
+.map .cn { font-family: var(--serif); font-size: 13px; fill: var(--ink-soft); }
+.map .river { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 15; opacity: .13; stroke: var(--ink); }
+.map .river.r2 { stroke: var(--ochre); opacity: .2; }
+.map .river.r3 { stroke: var(--indigo); opacity: .18; }
+.map .river.bad { stroke: var(--cinnabar); opacity: .2; }
+.map .arr { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.map .rx { cursor: pointer; }
+.map .rx rect { fill: var(--paper); stroke: var(--line); stroke-width: 1.2; rx: 14px; }
+.map .rx text { font-family: var(--serif); font-size: 14px; fill: var(--ink); text-anchor: middle; }
+.map .rx .n { font-family: var(--brush); font-size: 17px; fill: var(--ink-pale); }
+.map .rx:hover rect { stroke: var(--ink); }
+.map .rx.on rect { fill: var(--ink); stroke: var(--ink); }
+.map .rx.on text { fill: var(--paper); }
+.map .rx.on .n { fill: var(--paper); }
+.map .bad-t { fill: var(--cinnabar); font-weight: 600; }
+.sk { display: block; width: 100%; height: auto; overflow: visible; }
+.sk .b { stroke: var(--ink); stroke-width: 2.3; stroke-linecap: round; fill: none; }
+.sk text { font-family: var(--math); font-size: 19px; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+.sk .cap { font-family: var(--serif); font-size: 13px; fill: var(--ink-soft); }
+.sk .cap.hot { fill: var(--cinnabar); font-weight: 600; }
+.sk .arrow { stroke: var(--ink); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.sk .cond { font-family: var(--serif); font-size: 12.5px; fill: var(--ink-soft); }
+.rxlist { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 2rem clamp(1.5rem, 3vw, 3rem); }
+.rxlist ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+.rxlist li { display: grid; grid-template-columns: 1.9rem minmax(0, 1fr); gap: .1rem .5rem; padding: .7rem 0; border-bottom: 1px solid var(--hair); }
+.rxlist li > b { font-family: var(--brush); font-weight: 400; font-size: 1.35rem; line-height: 1.3; color: var(--cinnabar); grid-column: 1; grid-row: 1 / span 5; }
+.rxlist li > :not(b) { grid-column: 2; }
+.rxlist li > strong { font-size: .97rem; }
+.rxlist li > .eq { font-size: 1.08rem; padding: 0; }
+.rxlist li > span { font-size: .88rem; color: var(--ink-soft); line-height: 1.7; }
+
+/* 图表 */
+.chart { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--serif); fill: var(--ink-soft); font-size: 13px; font-variant-numeric: tabular-nums; }
+.chart .axis { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; fill: none; }
+.chart .grid { stroke: var(--hair); stroke-width: 1; }
+.chart .tick { stroke: var(--ink-soft); stroke-width: 1; }
+.chart .axis-name { fill: var(--ink-pale); font-size: 12px; letter-spacing: .1em; }
+.chart .lab { fill: var(--ink); font-size: 13.5px; font-weight: 600; }
+.chart .lab.hot { fill: var(--cinnabar); }
+.chart .halo-t { paint-order: stroke; stroke: var(--paper); stroke-width: 5px; stroke-linejoin: round; }
+.chart .ln { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart .ln.now { stroke: var(--cinnabar); }
+.chart .ln.old { stroke: var(--ink-pale); }
+.chart .ln.guess { stroke-dasharray: 2 6; }
+.chart .ln.blue { stroke: var(--indigo); }
+.chart .ln.ochre { stroke: var(--ochre); }
+.chart .pt { stroke: var(--paper); stroke-width: 2; }
+.chart .pt.now { fill: var(--cinnabar); }
+.chart .pt.old { fill: var(--ink-soft); }
+.chart .pt.hollow { fill: var(--paper); stroke-width: 2; }
+.chart .pt.hollow.now { stroke: var(--cinnabar); }
+.chart .pt.hollow.old { stroke: var(--ink-soft); }
+.chart .lim { stroke: var(--cinnabar); stroke-width: 1.5; }
+.chart .band { fill: var(--ink); opacity: .07; }
+.chart .band.hot { fill: var(--cinnabar); opacity: .1; }
+.chart .area { fill: var(--ink); opacity: .1; }
+.chart .hit { fill: transparent; cursor: crosshair; }
+.chart .cross { stroke: var(--ink-soft); stroke-width: 1; }
+.tip { position: absolute; pointer-events: none; z-index: 5; background: var(--paper); border: 1px solid var(--ink); border-radius: 4px 2px 5px 2px; padding: .3rem .6rem; font-size: .84rem; line-height: 1.5; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.plot { position: relative; }
+
+.ctl { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .9rem 1.6rem; }
+.ctl label { display: flex; flex-direction: column; gap: .05rem; font-size: .84rem; color: var(--ink-soft); }
+.ctl label span { display: flex; justify-content: space-between; gap: .6rem; align-items: baseline; }
+.ctl label output { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+.readout { display: flex; flex-wrap: wrap; gap: .9rem 2.4rem; align-items: flex-end; }
+.readout div { display: flex; flex-direction: column; gap: .05rem; }
+.readout span { font-size: .78rem; letter-spacing: .1em; color: var(--ink-pale); }
+.readout b { font-family: var(--brush); font-weight: 400; font-size: 2.1rem; line-height: 1.1; }
+.readout b small { font-family: var(--serif); font-size: .84rem; color: var(--ink-soft); margin-left: .25em; }
+.readout b.hot { color: var(--cinnabar); }
+.verdict { font-size: .95rem; border-left: 3px solid var(--cinnabar); padding-left: .9rem; max-width: 46em; }
+
+/* 捌：断案 */
+.grid22 { display: grid; grid-template-columns: auto repeat(2, minmax(0, 1fr)); gap: 0; font-size: .86rem; max-width: 26rem; }
+.grid22 > div { padding: .5rem .6rem; text-align: center; color: var(--ink-soft); }
+.grid22 .cell { border: 1px solid var(--line); margin: -.5px; height: 6.4rem; display: grid; place-items: center; position: relative; }
+.grid22 .cell i { display: block; border-radius: 50%; background: var(--cinnabar); width: calc(8px + var(--v) * 58px); height: calc(8px + var(--v) * 58px); opacity: calc(.25 + var(--v) * .7); transition: all .5s; filter: blur(.4px); }
+.grid22 .cell em { position: absolute; right: .35rem; bottom: .1rem; font-style: normal; font-size: .74rem; color: var(--ink-pale); }
+.grid22 .cell.q i { background: repeating-linear-gradient(45deg, var(--ink-pale) 0 2px, transparent 2px 6px); opacity: .7; }
+.grid22 .rowh { writing-mode: vertical-rl; letter-spacing: .15em; padding: .3rem .2rem; }
+.mx td.c b { font-family: var(--brush); font-weight: 400; font-size: 1.25rem; line-height: 1; }
+.mx td.c .y { color: var(--cinnabar); }
+.mx td.c .m { color: var(--ink-soft); }
+.mx td.c .n { color: var(--ink-pale); }
+.mx th.c { white-space: normal; min-width: 4.6em; }
+.trio { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.8rem clamp(1.5rem, 3vw, 3rem); }
+.trio > div { display: flex; flex-direction: column; gap: .5rem; border-top: 2px solid var(--ink); padding-top: .9rem; }
+.trio ul { margin: 0; padding-left: 1.15em; display: flex; flex-direction: column; gap: .3rem; font-size: .94rem; }
+
+/* 玖：对策 */
+.gates { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 2rem clamp(1.5rem, 3vw, 2.6rem); }
+.gate { display: flex; flex-direction: column; gap: .5rem; border-top: 2px solid var(--ink); padding-top: .8rem; }
+.gate .g-no { font-family: var(--brush); font-size: 1.5rem; color: var(--cinnabar); line-height: 1; }
+.gate dl { margin: 0; display: grid; grid-template-columns: 3.2em minmax(0, 1fr); gap: .35rem .7rem; font-size: .92rem; }
+.gate dt { color: var(--ink-pale); font-size: .8rem; letter-spacing: .1em; padding-top: .15em; }
+.gate dd { margin: 0; }
+.stack { display: flex; flex-direction: column; gap: .2rem; }
+.stack label { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr) auto; gap: .2rem .6rem; align-items: baseline; padding: .5rem 0; border-bottom: 1px solid var(--hair); font-size: .95rem; cursor: pointer; }
+.stack label small { grid-column: 2 / 4; font-size: .82rem; color: var(--ink-pale); line-height: 1.6; }
+.stack label b { font-family: var(--math); font-weight: 400; color: var(--ink-soft); white-space: nowrap; }
+.stack input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 1.05rem; height: 1.05rem; border: 1.5px solid var(--ink); border-radius: 3px 2px 4px 2px; margin: 0; cursor: pointer; position: relative; top: .15rem; }
+.stack input[type="checkbox"]:checked { background: var(--cinnabar); border-color: var(--cinnabar); }
+
+footer { font-size: .84rem; color: var(--ink-pale); border-top: 1px solid var(--line); padding-top: 1rem; display: flex; flex-direction: column; gap: .6rem; }
+footer p { max-width: 62em; }
+.refs { margin: 0; padding-left: 1.4em; font-size: .86rem; color: var(--ink-soft); display: flex; flex-direction: column; gap: .3rem; max-width: 64em; line-height: 1.7; }
+
+@media (max-width: 980px) {
+  .stage, .stage.even { grid-template-columns: minmax(0, 1fr); }
+  .two { grid-template-columns: minmax(0, 1fr); }
+  .rxlist { grid-template-columns: minmax(0, 1fr); }
+  header.top > svg.hills { width: 74%; opacity: .7; }
+  .cmp { grid-template-columns: minmax(6em, 1fr) repeat(2, minmax(0, 1fr)); }
+  .cmp .d, .cmp .h.d { display: none; }
+  .tabs a.t span { display: none; }
+  .panel.wide { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .grid22 .cell i { transition: none; }
+}
+</style>
+</head>
+<body>
+<nav class="tabs" aria-label="章节">
+  <a class="brand" href="#top">一滴墨的来历</a>
+  <a class="t" href="#case"><i>壹</i><span>案情</span></a>
+  <a class="t" href="#flow"><i>贰</i><span>工艺</span></a>
+  <a class="t" href="#chem"><i>叁</i><span>反应</span></a>
+  <a class="t" href="#mol"><i>肆</i><span>分子</span></a>
+  <a class="t" href="#rate"><i>伍</i><span>速率</span></a>
+  <a class="t" href="#wash"><i>陆</i><span>水洗</span></a>
+  <a class="t" href="#assay"><i>柒</i><span>检测</span></a>
+  <a class="t" href="#judge"><i>捌</i><span>断案</span></a>
+  <a class="t" href="#control"><i>玖</i><span>对策</span></a>
+  <a class="t" href="#notes"><i>拾</i><span>出处</span></a>
+</nav>
+
+<div class="scroll" id="top">
+
+<header class="top">
+  <svg class="hills" viewBox="0 0 680 300" aria-hidden="true">
+    <circle class="sun" cx="548" cy="70" r="24"/>
+    <path class="far" d="M0 300 L0 214 Q70 150 132 190 Q196 96 276 168 Q338 118 396 176 Q470 76 560 164 Q624 122 680 150 L680 300 Z"/>
+    <path class="mid" d="M0 300 L0 250 Q90 196 168 236 Q250 168 330 228 Q420 150 520 222 Q604 186 680 214 L680 300 Z"/>
+    <path class="near" d="M0 300 L0 276 Q110 238 214 268 Q318 224 428 262 Q548 226 680 256 L680 300 Z"/>
+  </svg>
+  <div class="eyebrow">CSU Fall 2026 Case Competition · A Pernicious Manufacturing Problem</div>
+  <h1>一滴墨的来历<small>Nerivartan 里那个 0.52 ppm 的信号：从哪里来，怎么认，怎么防</small></h1>
+  <p class="lede">一缸清水里滴进一滴墨，肉眼看不出来，墨却还在。CSU O.W.C.A. 制药的降压药原料 Nerivartan，在痕量亚硝胺筛查里出现了一个约 0.52 ppm 的未知信号，而常规的 UHPLC-UV 对它毫无知觉。这一卷沿着你的摘要走：先看两份批记录差在哪里，再顺着工艺把每一步化学摊开，最后落到怎么确证、怎么防。</p>
+  <div class="figs">
+    <div class="fig key"><b>0.52<small>ppm</small></b><span>痕量筛查里的未知信号，身份和准确浓度都还没确证</span></div>
+    <div class="fig"><b>0.40<small>ppm</small></b><span>NDMA 的限度：96 ng/天 ÷ 0.240 g/天</span></div>
+    <div class="fig"><b>11.8<small>mg/L</small></b><span>回收 DMF（Lot R-21）里的二甲胺；原生 DMF 低于 1.0</span></div>
+    <div class="fig"><b>3 → 2</b><span>放大生产时，淬灭之后的水洗次数</span></div>
+    <div class="fig"><b>1250<small>倍</small></b><span>常规 UV 法的定量限（500 ppm）与限度之间的距离</span></div>
+  </div>
+  <p class="note">页面里的四种标记：<span class="tag fact">案例</span> 案例文件直接给出的数据；<span class="tag infer">推断</span> 由化学原理推出来、还没有数据直接证明的；<span class="tag todo">待检验</span> 需要新实验才能回答的；<span class="tag mine">补充</span> 摘要之外、我替你补进去的想法，用之前请自己核对。</p>
+</header>
+
+<!-- 壹 -->
+<section id="case" aria-labelledby="h-case">
+  <div class="head"><span class="seal">壹</span><h2 id="h-case">案情：两份批记录</h2><span class="en">Table 1, side by side</span></div>
+  <p>供应商审计之后，公司把历史工艺和现行工艺的记录摆到了一起。八项里有五项变了，其中含量只动了 0.1 个百分点，仍然合格。pH 和 UV 结果几乎没变，痕量筛查则是旧工艺根本没做过。没变的和没做的，同样要紧。</p>
+  <div class="legend"><span><i class="bar old"></i>历史工艺</span><span><i class="bar now"></i>现行工艺</span><span class="pale">细条只画在从零起算才有意义的三项上</span></div>
+  <div class="cmp" role="table" aria-label="历史工艺与现行工艺对比">
+    <div class="h">指标</div><div class="h">历史工艺</div><div class="h">现行工艺</div><div class="h d">变化</div>
+
+    <div class="k">DMF 来源</div><div class="v"><b>原生 DMF</b></div><div class="v now"><b>回收 DMF，Lot R-21</b></div><div class="d">换了来源</div>
+    <div class="k">DMF 含量</div><div class="v"><b>99.80%</b></div><div class="v now"><b>99.70%</b></div><div class="d flat">都符合 ≥ 99.5%</div>
+    <div class="k">进料 DMF 中的 DMA</div><div class="v"><b>&lt; 1.0 mg/L</b><i style="--v:.085"></i></div><div class="v now"><b>11.8 mg/L</b><i style="--v:1"></i></div><div class="d"><b>×12</b>以上</div>
+    <div class="k">淬灭后的水洗次数</div><div class="v"><b>3 次</b><i style="--v:1"></i></div><div class="v now"><b>2 次</b><i style="--v:.667"></i></div><div class="d"><b>−1</b>少洗一次</div>
+    <div class="k">末次水洗后的亚硝酸根</div><div class="v"><b>0.4 mg/L</b><i style="--v:.125"></i></div><div class="v now"><b>3.2 mg/L</b><i style="--v:1"></i></div><div class="d"><b>×8</b></div>
+    <div class="k">淬灭 pH</div><div class="v same"><b>2.9</b></div><div class="v same"><b>2.8</b></div><div class="d flat">几乎没变</div>
+    <div class="k">常规 UHPLC-UV</div><div class="v same"><b>无可报告的未知杂质</b></div><div class="v same"><b>无可报告的未知杂质</b></div><div class="d flat">一样：都看不见</div>
+    <div class="k">痕量亚硝胺筛查</div><div class="v"><b>没做过</b></div><div class="v now"><b>约 0.52 ppm 处有信号</b></div><div class="d">没有基线可比</div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>变了的两件事，各自对上一种原料</h3>
+      <p>换成回收 DMF，带来了<span class="blue">胺</span>（DMA 升到 12 倍以上）。少洗一次，留下了<span class="ochre">亚硝酸根</span>（升到 8 倍）。生成亚硝胺需要的正是这两样，再加上酸。<span class="tag fact">案例</span></p>
+    </div>
+    <div class="card">
+      <h3>没变的 pH 才是底色</h3>
+      <p>2.8 和 2.9 都落在仲胺亚硝化最快的那段 pH 里（见「速率」一章）。pH 不是这次的变量，它是一扇一直开着的门。<span class="tag infer">推断</span></p>
+    </div>
+    <div class="card">
+      <h3>两个「没看见」，都不等于「没有」</h3>
+      <p>UHPLC-UV 的定量限约 500 ppm，比限度高 1250 倍，看不见亚 ppm 的东西很正常。旧工艺则从来没做过痕量筛查。所以「旧工艺没问题」这句话，目前没有数据支持。<span class="tag todo">待检验</span></p>
+    </div>
+    <div class="card">
+      <h3>含量 99.70%，为什么照样放行</h3>
+      <p>标准只要求含量 ≥ 99.5%，等于给「其他成分」留了 5000 ppm 的余地。11.8 mg/L 的 DMA 折合约 12.5 ppm（按 DMF 密度 0.944 g/mL），只占这块余地的四百分之一。含量这项指标对它是盲的。<span class="tag mine">补充</span></p>
+    </div>
+  </div>
+
+  <div class="two">
+    <div>
+      <h3>限度是怎么来的</h3>
+      <div class="boxed">
+        <div class="eq">NDMA：<span class="frac"><span>96 ng/天</span><span>0.240 g/天</span></span> = 400 ng/g = <strong>0.40 ppm</strong></div>
+        <div class="eq">NDEA：<span class="frac"><span>26.5 ng/天</span><span>0.240 g/天</span></span> ≈ 110 ng/g = <strong>0.11 ppm</strong></div>
+      </div>
+      <p class="note">可接受摄入量（AI）除以最大日剂量 240 mg。<span class="tag fact">案例</span></p>
+    </div>
+    <div>
+      <h3>0.52 ppm 意味着什么</h3>
+      <p>如果它确实是 NDMA：0.52 µg/g × 0.240 g = <strong>125 ng/天</strong>，是可接受摄入量的 1.3 倍。如果它其实是 NDEA，那就是限度的 4.7 倍。同一个数字，身份不同，严重程度差出几倍，所以要先认身份，再谈超没超。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 贰 -->
+<section id="flow" aria-labelledby="h-flow">
+  <div class="head"><span class="seal">贰</span><h2 id="h-flow">工艺长卷：从投料到放行</h2><span class="en">The whole process</span></div>
+  <p>把这条线从头画到尾，连同厂外那一段溶剂回收。点任何一站，右边会写出那里发生的化学、案例给的证据，以及摘要打算在那里取的样。</p>
+  <div class="bar">
+        <div class="chips" role="group" aria-label="工艺版本">
+          <button type="button" data-mode="old" aria-pressed="false">历史工艺 · 原生 DMF · 三洗</button>
+          <button type="button" data-mode="now" aria-pressed="true">现行工艺 · 回收 DMF · 两洗</button>
+        </div>
+        <button type="button" class="toggle" id="flag-toggle" aria-pressed="true">取样点</button>
+      </div>
+      <div class="flow-wrap"><svg class="flow" id="flow-svg" viewBox="0 0 1400 610" role="img" aria-label="Nerivartan 四唑步骤的工艺流程图：投料、成环、亚硝酸钠淬灭、水洗、结晶、过滤干燥、放行，以及外包的 DMF 回收回路"></svg></div>
+      <div class="legend">
+        <span><i class="dma"></i>二甲胺 DMA</span><span><i class="no2"></i>亚硝酸根</span><span><i class="ndma"></i>NDMA（假说）</span><span><i class="gas"></i>N₂、N₂O</span><span><i style="background:var(--ink-pale)"></i>用过的 DMF</span>
+      </div>
+  <p class="note">粒子是按「淬灭釜里原位生成，水洗清除不足」这个假说画的，数目只表示相对多少，不是实测浓度。它是不是事实，要到「断案」一章再说。</p>
+  <div class="panel wide" id="flow-panel" aria-live="polite"></div>
+</section>
+
+<!-- 叁 -->
+<section id="chem" aria-labelledby="h-chem">
+  <div class="head"><span class="seal">叁</span><h2 id="h-chem">反应全谱：三条河，两处汇流</h2><span class="en">Every reaction in the pot</span></div>
+  <p>釜里的化学可以看成三条河。一条是做药的主线，腈和叠氮长成四唑；一条是淬灭剂，亚硝酸钠在酸里变成亚硝化物种；一条是溶剂，DMF 裂出二甲胺。亚硝化物种本来只该和残余的叠氮相遇。DMA 混进来以后，同一把刀多砍了一个对象。</p>
+  <div class="stage even">
+    <div>
+      <div class="bar"><span class="bar-title">反应地图 · 点圆角标签，右边演示那一步</span></div>
+      <svg class="map" id="rx-map" viewBox="0 0 840 500" role="group" aria-label="反应地图"></svg>
+      <div class="p-eq" id="rx-eq"></div>
+      <p class="note" id="rx-note"></p>
+    </div>
+    <div>
+      <div class="bar"><span class="bar-title" id="rx-title"></span></div>
+      <div class="c3d"><canvas id="rx-canvas" tabindex="0" aria-label="三维反应演示，可拖动旋转，方向键也可旋转"></canvas><span class="corner">拖动旋转</span></div>
+      <div class="player">
+        <button type="button" id="rx-play" aria-label="播放或暂停">❚❚</button>
+        <input type="range" id="rx-seek" min="0" max="4" step="0.001" value="0" aria-label="反应进度">
+      </div>
+      <ol class="caps" id="rx-caps"></ol>
+      <div class="legend"><span><i></i>碳</span><span><i class="n"></i>氮</span><span><i class="o"></i>氧</span><span><i class="h"></i>氢</span><span><i class="dash"></i>正在形成或断开的键</span></div>
+      <p class="note">坐标由标准键长键角搭出，帧与帧之间做插值。它是机理的示意，不是量化计算出来的反应路径。</p>
+    </div>
+  </div>
+
+  <div class="two">
+    <div>
+      <h3>祸根这条线，画成结构式</h3>
+      <svg class="sk" id="sk-ndma" viewBox="0 0 660 190" role="img" aria-label="DMF 分解成二甲胺，二甲胺在酸性亚硝酸条件下生成 NDMA"></svg>
+      <p class="note">与案例图 1 是同一条路：溶剂 → 仲胺 → 亚硝胺。</p>
+    </div>
+    <div>
+      <h3>主线：腈长成四唑</h3>
+      <svg class="sk" id="sk-tet" viewBox="0 0 660 190" role="img" aria-label="芳基腈与叠氮根环加成生成 5-取代 1H-四唑"></svg>
+      <p class="note">Ar 代表药物分子的联苯骨架。四唑环与案例图 2 相同。</p>
+    </div>
+  </div>
+
+  <h3>全部反应式</h3>
+  <div class="rxlist">
+    <div>
+      <h4>设计之内：做药，再把叠氮销毁</h4>
+      <ol>
+        <li><b>一</b><strong>四唑成环（[3+2] 环加成）</strong><div class="eq">Ar–C≡N + NaN₃ → Ar–CN₄⁻ Na⁺ →(H⁺) Ar–CN₄H</div><span>DMF 中加热，常加路易斯酸或铵盐活化腈基。叠氮化钠过量，反应完釜里还剩 N₃⁻。四唑 N–H 的 pKa 约 4.5–4.9。</span></li>
+        <li><b>二</b><strong>残余叠氮遇酸</strong><div class="eq">N₃⁻ + H⁺ ⇌ HN₃　（pKa 4.7）</div><span>叠氮酸沸点 37 °C，易挥发、剧毒、易爆。这是非淬灭不可的原因。</span></li>
+        <li><b>三</b><strong>亚硝酸钠遇酸</strong><div class="eq">NO₂⁻ + H⁺ ⇌ HNO₂　（pKa ≈ 3.3）</div><span>pH 2.8 时，大约四分之三的亚硝酸根已经变成 HNO₂。</span></li>
+        <li><b>四</b><strong>亚硝化物种</strong><div class="eq">2 HNO₂ ⇌ N₂O₃ + H₂O</div><div class="eq">HNO₂ + H⁺ ⇌ H₂O–NO⁺ ⇌ NO⁺ + H₂O</div><span>pH 2–4 以 N₂O₃ 为主，酸更强时 NO⁺ 的份额上升。若用盐酸酸化，还会有 HNO₂ + H⁺ + Cl⁻ ⇌ ClNO + H₂O，氯离子起催化作用。</span></li>
+        <li><b>五</b><strong>淬灭的本职</strong><div class="eq">HN₃ + HNO₂ → N₂↑ + N₂O↑ + H₂O</div><span>经亚硝酰叠氮 N₃–N=O 分解。实验室手册也写作 2 NaN₃ + 2 HNO₂ → 3 N₂ + 2 NO + 2 NaOH。两种写法都要求亚硝酸过量，才能把叠氮清干净。</span></li>
+      </ol>
+    </div>
+    <div>
+      <h4>设计之外：溶剂带来的支线</h4>
+      <ol>
+        <li><b>六</b><strong>DMF 水解</strong><div class="eq">HCON(CH₃)₂ + H₂O → HCOOH + (CH₃)₂NH</div><span>酸、碱催化，加热加快。</span></li>
+        <li><b>七</b><strong>DMF 热分解</strong><div class="eq">HCON(CH₃)₂ → CO + (CH₃)₂NH</div><span>接近沸点（153 °C）时缓慢发生，酸碱杂质会加速。蒸馏回收恰好提供这种条件。</span></li>
+        <li><b>八</b><strong>胺的酸碱平衡</strong><div class="eq">(CH₃)₂NH₂⁺ ⇌ (CH₃)₂NH + H⁺　（pKa 10.73）</div><span>pH 2.8 时游离胺只占约 10⁻⁸，其余都是不反应的铵离子。反应仍然能走，只是被这个比例拖慢。</span></li>
+        <li><b>九</b><strong>亚硝化：NDMA 的生成</strong><div class="eq">(CH₃)₂NH + N₂O₃ → (CH₃)₂N–N=O + HNO₂</div><div class="eq">速率 = k [(CH₃)₂NH] [HNO₂]²</div><span>对亚硝酸是二级：N₂O₃ 要两分子 HNO₂ 才凑得出来。</span></li>
+        <li><b>十</b><strong>亚硝酸自身分解</strong><div class="eq">3 HNO₂ → HNO₃ + 2 NO + H₂O</div><div class="eq">2 NO + O₂ → 2 NO₂　　NO + NO₂ ⇌ N₂O₃</div><span>淬灭放出的氮氧化物在釜顶空间里仍是亚硝化试剂，通风和氮气吹扫有用。</span></li>
+      </ol>
+    </div>
+    <div>
+      <h4>补救：把多余的亚硝酸清掉</h4>
+      <ol>
+        <li><b>十一</b><strong>氨基磺酸</strong><div class="eq">HNO₂ + H₂NSO₃H → N₂↑ + H₂SO₄ + H₂O</div><span>快，产物只有氮气和硫酸，工艺上最常用。</span></li>
+        <li><b>十二</b><strong>抗坏血酸</strong><div class="eq">C₆H₈O₆ + 2 HNO₂ → C₆H₆O₆ + 2 NO + 2 H₂O</div><span>把亚硝酸还原成 NO。有氧时 NO 会重新变回亚硝化物种，更适合用在分析稀释液里。</span></li>
+        <li><b>十三</b><strong>尿素</strong><div class="eq">CO(NH₂)₂ + 2 HNO₂ → CO₂ + 2 N₂ + 3 H₂O</div><span>便宜，但比前两种慢。</span></li>
+      </ol>
+    </div>
+    <div>
+      <h4>进了人体之后：限度为什么是纳克级</h4>
+      <ol>
+        <li><b>十四</b><strong>代谢活化</strong><div class="eq">(CH₃)₂N–NO →(CYP2E1) HOCH₂–N(CH₃)–NO</div><div class="eq">→ HCHO + CH₃–N=N–OH → CH₃–N₂⁺</div><span>NDMA 本身不直接损伤 DNA。肝脏的 CYP2E1 在甲基上加一个羟基，分子随即散架，放出甲基重氮离子，把甲基接到 DNA 碱基上（如 O⁶-甲基鸟嘌呤）。这是它致突变、致癌的化学基础。</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- 肆 -->
+<section id="mol" aria-labelledby="h-mol">
+  <div class="head"><span class="seal">肆</span><h2 id="h-mol">七个分子的小像</h2><span class="en">Shapes that matter</span></div>
+  <p>有几件事要看立体形状才明白：DMF 和 NDMA 的重原子为什么都在一个平面上，二甲胺的孤对电子朝哪边，N₂O₃ 中间那根键为什么一碰就断。</p>
+  <div class="stage">
+    <div>
+      <div class="chips" id="mol-chips" role="group" aria-label="选择分子"></div>
+      <div class="c3d tall"><canvas id="mol-canvas" tabindex="0" aria-label="三维分子模型，可拖动旋转，方向键也可旋转"></canvas><span class="corner">拖动旋转</span></div>
+      <div class="legend"><span><i></i>碳</span><span><i class="n"></i>氮</span><span><i class="o"></i>氧</span><span><i class="h"></i>氢</span><span class="pale">远处的原子画得淡，近处的浓</span></div>
+    </div>
+    <div class="panel" id="mol-panel" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- 伍 -->
+<section id="rate" aria-labelledby="h-rate">
+  <div class="head"><span class="seal">伍</span><h2 id="h-rate">速率之山</h2><span class="en">How fast, and where</span></div>
+  <p>仲胺的亚硝化有一条经典的速率式（Mirvish，1975）。把它画成一座山：横向是 pH，纵深是亚硝酸根浓度，高度是 NDMA 的生成速率。三个坐标同时在变，所以这里用立体的画法。</p>
+  <div class="two">
+    <div>
+      <div class="boxed">
+        <div class="eq">速率 = k · [DMA]<sub>总</sub> · [NO₂⁻]<sub>总</sub>² · g(pH)</div>
+        <div class="eq">g(pH) = <span class="frac"><span>4 K<sub>a</sub> [H⁺]</span><span>(K<sub>a</sub> + [H⁺])²</span></span></div>
+      </div>
+      <p class="note">k = 0.0017 M⁻²·s⁻¹（二甲胺，25 °C，水相，最适 pH 处）。g 在 pH = pK<sub>a</sub>(HNO₂) 时等于 1；这里按 Mirvish 实测的最适 pH 取 3.4。</p>
+    </div>
+    <div>
+      <h3>为什么是一道山脊</h3>
+      <p>pH 低，亚硝酸多，可是胺几乎全被质子化，没有孤对电子可用。pH 高，游离胺多了，亚硝酸却变回了不反应的亚硝酸根。两头都慢，中间最快。沿亚硝酸浓度方向，山一直往上爬：浓度每高 10 倍，速率高 100 倍。</p>
+    </div>
+  </div>
+  <div class="stage">
+    <div>
+      <div class="c3d tall"><canvas id="rate-canvas" tabindex="0" aria-label="速率曲面：pH、亚硝酸根浓度与 NDMA 生成速率，可拖动旋转"></canvas><span class="corner">拖动旋转 · 深一道墨线 = 速率差 10 倍</span></div>
+      <div class="legend"><span><i class="dash"></i>山脊：最适 pH 3.4</span><span><i class="n"></i>探针：下面滑块选的条件</span><span><i class="o"></i>淬灭结束时</span><span><i class="no2"></i>末次水洗后</span></div>
+    </div>
+    <div>
+      <div class="ctl">
+        <label><span>pH <output id="o-ph"></output></span><input type="range" id="i-ph" min="0" max="8" step="0.1" value="2.8"></label>
+        <label><span>亚硝酸根 <output id="o-no2"></output></span><input type="range" id="i-no2" min="-2" max="2" step="0.01" value="0.648"></label>
+        <label><span>反应液中的 DMA <output id="o-dma"></output></span><input type="range" id="i-dma" min="0.5" max="20" step="0.1" value="11.8"></label>
+        <label><span>停留时间 <output id="o-t"></output></span><input type="range" id="i-t" min="5" max="480" step="5" value="60"></label>
+        <label><span>每千克 API 对应的反应液 <output id="o-v"></output></span><input type="range" id="i-v" min="2" max="20" step="0.5" value="8"></label>
+      </div>
+      <div class="chips" id="rate-presets" role="group" aria-label="预设条件">
+        <button type="button" data-p="quench">淬灭结束时（回推）</button>
+        <button type="button" data-p="washed">末次水洗后</button>
+        <button type="button" data-p="old">历史工艺的 DMA</button>
+        <button type="button" data-p="hot">加料中，假设 30 mM</button>
+      </div>
+      <div class="readout">
+        <div><span>相对山脊处</span><b id="r-g"></b></div>
+        <div><span>生成速率</span><b id="r-rate"></b></div>
+        <div><span>折合 API 中的 NDMA</span><b id="r-ppm" class="hot"></b></div>
+      </div>
+      <p class="verdict" id="r-verdict"></p>
+    </div>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3>pH 2.8 和 2.9 是同一个地方</h3>
+      <p>按这条式子，pH 2.9 的速率是山脊处的 73%，pH 2.8 是 64%。两种工艺都站在山脊旁边。pH 解释不了新旧工艺的差别，但没有它，NDMA 根本生成不了。<span class="tag infer">推断</span></p>
+    </div>
+    <div class="card">
+      <h3>平方项决定了「在哪里生成」</h3>
+      <p>按水洗数据回推，淬灭结束时亚硝酸根约 4.5 mM；末次水洗后是 0.07 mM（3.2 mg/L）。两处的速率相差约 4000 倍，加料过程中的瞬时浓度还会更高。所以 NDMA 若是原位生成的，主要生成在淬灭釜里，不在水洗之后。<span class="tag infer">推断</span></p>
+    </div>
+    <div class="card">
+      <h3>量级够不够，是个开着的问题</h3>
+      <p>按默认这组数（DMA 11.8 mg/L，4.5 mM，1 小时，8 L/kg），只能生成约 0.012 ppm，比 0.52 ppm 少四十倍左右。瞬时亚硝酸浓度高出六七倍就能补上这个差距；釜内新生成的 DMA、更长的停留、氯离子催化也都可以。但它同样可能说明，有一部分 NDMA 是随溶剂带进来的。动力学给不出答案，它只告诉我们该去测什么。<span class="tag mine">补充</span></p>
+    </div>
+  </div>
+  <p class="note">这是稀水溶液、25 °C 的动力学。真实体系是 DMF、水和有机相的混合物，温度不同，还有卤离子催化。这里只取量级和趋势，不是预测值。「每千克 API 对应 8 L 反应液」是为了换算随手取的假设，案例没有给。</p>
+</section>
+
+<!-- 陆 -->
+<section id="wash" aria-labelledby="h-wash">
+  <div class="head"><span class="seal">陆</span><h2 id="h-wash">水洗与物料账</h2><span class="en">Purge and mass balance</span></div>
+  <p>水洗这一步没有新反应，只有稀释和分配。案例给的两个亚硝酸根数字，正好够算出一次水洗的力气。</p>
+  <div class="two">
+    <div>
+      <h3>一洗约等于八分之一</h3>
+      <div class="plot"><svg class="chart" id="wash-chart" viewBox="0 0 560 330" role="img" aria-label="亚硝酸根浓度随水洗次数下降的对数图"></svg></div>
+      <div class="legend"><span><i style="background:var(--ink-soft)"></i>历史工艺实测</span><span><i class="ndma"></i>现行工艺实测</span><span><i class="ring" style="border-color:var(--ink-pale)"></i>按 8 倍回推</span></div>
+      <p>三洗后 0.4 mg/L，两洗后 3.2 mg/L，只差一洗，差 8 倍。如果两种工艺淬灭后的起点相同、每一洗的效率也相同，往回推，淬灭结束时约 200 mg/L（4.5 mM）。<span class="tag infer">推断</span> 这是两个点连出来的线，要靠逐洗取样来验证。</p>
+    </div>
+    <div>
+      <h3>补上第三洗，够不够</h3>
+      <div class="ctl"><label><span>NDMA 每洗的清除倍数（未知，先假设）<output id="o-f"></output></span><input type="range" id="i-f" min="1" max="12" step="0.1" value="4"></label></div>
+      <div class="plot"><svg class="chart" id="purge-chart" viewBox="0 0 560 150" role="img" aria-label="补第三次水洗后 NDMA 的预计浓度与限度的比较"></svg></div>
+      <p class="verdict" id="purge-verdict"></p>
+      <p class="note">NDMA 与水互溶（log P ≈ −0.57），水洗理应带得走，但带走多少取决于它在有机相和水相之间怎么分配，这个数只能实测：在水洗前加标已知量的 NDMA，看每一洗后还剩多少。<span class="tag mine">补充</span></p>
+    </div>
+  </div>
+  <div class="two">
+    <div>
+      <h3>DMA 的账：够不够生成 0.52 ppm</h3>
+      <div class="ctl"><label><span>每千克 API 用的 DMF（假设）<output id="o-vd"></output></span><input type="range" id="i-vd" min="2" max="20" step="0.5" value="8"></label></div>
+      <div class="tbl-wrap"><table id="dma-table" aria-label="DMA 化学计量账"></table></div>
+    </div>
+    <div>
+      <h3>这笔账说明什么</h3>
+      <p>进料里的 DMA 远远过量。要解释 0.52 ppm，只需要其中千分之几变成 NDMA 并留在产品里。<span class="tag infer">推断</span></p>
+      <p>更要紧的是第二行：历史工艺的 DMA 虽然低于 1.0 mg/L，按化学计量仍然够超出限度几十倍。旧工艺要是真的干净，可能是靠第三洗在兜底，也可能只是没测过。这就是为什么旧批次的留样一定要用同一个方法检测。<span class="tag mine">补充</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- 柒 -->
+<section id="assay" aria-labelledby="h-assay">
+  <div class="head"><span class="seal">柒</span><h2 id="h-assay">看不见的 0.52</h2><span class="en">Confirming identity and amount</span></div>
+  <p>筛查只说「那里有东西」。要回答它是不是 NDMA、到底多少，方法得换。</p>
+  <div class="plot"><svg class="chart" id="ladder-chart" viewBox="0 0 1100 190" role="img" aria-label="浓度标尺：UV 定量限 500 ppm，筛查信号 0.52 ppm，NDMA 限度 0.40 ppm，NDEA 限度 0.11 ppm，确证方法需要的定量限 0.04 至 0.12 ppm"></svg></div>
+  <div class="cards">
+    <div class="card">
+      <h3>常规 UV 为什么看不见</h3>
+      <ul>
+        <li>浓度上差 1250 倍：定量限 500 ppm，限度 0.40 ppm。</li>
+        <li>NDMA 分子小，紫外吸收集中在 230 nm 附近且不强，在色谱上保留也弱，容易埋在溶剂峰和基质里。</li>
+        <li>UV 只给保留时间和峰面积，不给「它是谁」。</li>
+      </ul>
+      <p><span class="tag fact">案例</span> 两种工艺的 UV 结果相同，所以它也分不出新旧工艺。</p>
+    </div>
+    <div class="card">
+      <h3>确证方法：LC-MS/MS，同位素稀释</h3>
+      <ul>
+        <li>样品溶在加了亚硝酸清除剂的稀释液里，低温、避光，防止前处理时现生成。</li>
+        <li>反相色谱把 NDMA 和残留 DMF、API 主峰分开；主峰切到废液，不进质谱。</li>
+        <li>正离子模式（APCI 或 ESI），多反应监测。</li>
+        <li>定量限做到限度的 10%–30%（0.04–0.12 ppm）以下，至少不高于 0.40 ppm。</li>
+      </ul>
+      <p><span class="tag fact">案例</span> 摘要里已经写明：对照品、同位素内标、定量限 ≤ 0.40 ppm。</p>
+    </div>
+    <div class="card">
+      <h3>凭什么说「它就是 NDMA」</h3>
+      <ul>
+        <li>保留时间与 NDMA 对照品一致。</li>
+        <li>两对离子（定量 + 定性）的比值与对照品一致。</li>
+        <li>与同位素内标 NDMA-d₆ 共流出。</li>
+        <li>加标回收合格，标准加入法结果一致。</li>
+        <li>用第二种原理不同的方法复核：高分辨质谱的精确质量 75.0553。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="two">
+    <div>
+      <h3>监测的离子</h3>
+      <div class="tbl-wrap"><table aria-label="多反应监测离子对">
+        <thead><tr><th>化合物</th><th>母离子 [M+H]⁺</th><th>子离子</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td>NDMA</td><td>75.1</td><td>43.1</td><td>定量</td></tr>
+          <tr><td>NDMA</td><td>75.1</td><td>58.1</td><td>定性确认</td></tr>
+          <tr><td>NDMA-d₆</td><td>81.1</td><td>46.1</td><td>同位素内标</td></tr>
+          <tr><td>NDEA</td><td>103.1</td><td>75.1 / 47.1</td><td>顺带筛查</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">文献中常用的离子对，具体数值以所用仪器的优化结果为准。顺带看 NDEA，是因为回收商处理多家客户的溶剂，胺的种类不可知，而 NDEA 的限度只有 0.11 ppm。<span class="tag mine">补充</span></p>
+      <h3>防假象的几件小事</h3>
+      <ul class="steps">
+        <li>同一份样品，稀释液加与不加清除剂各做一次。加了以后读数下降，说明前处理时在现生成。</li>
+        <li>含亚硝酸根和胺的样品不走高温进样口；若用气相法，必须有液相法交叉验证。</li>
+        <li>报告 DMF 与 NDMA 的色谱分离度。</li>
+        <li>试剂空白要做全：实验室自己的 DMF、滤膜、手套都可能带入 NDMA。</li>
+      </ul>
+    </div>
+    <div>
+      <h3>一个专属于这个案子的陷阱：DMF 的同位素峰</h3>
+      <p>DMF 正是工艺溶剂，产品里难免残留。质子化的 DMF 是 m/z 74.0600，它含一个 ¹⁵N 的同位素峰落在 <strong>75.0571</strong>，离 NDMA 的 <strong>75.0553</strong> 只差 0.0018。分辨率不够、色谱又没分开的话，两个峰会并成一个。<span class="tag mine">补充</span></p>
+      <div class="ctl">
+        <label><span>质谱分辨率 R <output id="o-r"></output></span><input type="range" id="i-r" min="3.7" max="5.15" step="0.01" value="4"></label>
+        <label><span>API 中残留的 DMF <output id="o-d"></output></span><input type="range" id="i-d" min="0" max="880" step="10" value="150"></label>
+      </div>
+      <div class="chips" role="group" aria-label="样品里是否真有 NDMA">
+        <button type="button" id="ndma-on" aria-pressed="true">样品里真有 0.52 ppm NDMA</button>
+        <button type="button" id="ndma-off" aria-pressed="false">样品里其实没有 NDMA</button>
+      </div>
+      <div class="plot"><svg class="chart" id="hrms-chart" viewBox="0 0 600 300" role="img" aria-label="m/z 75.05 附近的高分辨质谱：NDMA 与 DMF 的两个同位素峰"></svg></div>
+      <div class="legend"><span><i class="ndma"></i>NDMA 75.0553</span><span><i class="dma"></i>DMF（¹⁵N）75.0571</span><span><i class="no2"></i>DMF（¹³C）75.0634</span><span><i></i>仪器实际看到的合峰</span></div>
+      <p class="verdict" id="hrms-verdict"></p>
+      <p class="note">假设两者完全共流出、电离响应相同，这在真实样品里并不成立，所以这张图只说明量级：残留 DMF 的限度是 880 ppm（ICH Q3C），而一百多 ppm 的 DMF 就足以在低分辨下凑出 0.5 ppm 级别的假信号。真实方法靠色谱分离、离子对的选择性和足够的分辨率三重保险。筛查用的是什么方法，案例没有说。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 捌 -->
+<section id="judge" aria-labelledby="h-judge">
+  <div class="head"><span class="seal">捌</span><h2 id="h-judge">断案：证据、推断、待检验</h2><span class="en">What we know, what we think, what to test</span></div>
+  <p>摘要里有一句话很要紧：筛查既没有认出这个峰，也没有定出它的浓度。先把手里的材料按分量分开摆。</p>
+  <div class="trio">
+    <div>
+      <h3><span class="tag fact">案例</span> 数据直接支持的</h3>
+      <ul>
+        <li>筛查在约 0.52 ppm 处有信号，身份未定。</li>
+        <li>回收 DMF（R-21）的 DMA 为 11.8 mg/L，原生 DMF 低于 1.0。</li>
+        <li>水洗从三次减到两次；末次水洗后亚硝酸根 0.4 → 3.2 mg/L。</li>
+        <li>淬灭 pH 2.9 与 2.8，两种工艺几乎相同。</li>
+        <li>UHPLC-UV 在两种工艺下结果相同，定量限 500 ppm。</li>
+        <li>回收商共用设备，批次追溯不完整。</li>
+        <li>历史工艺没有做过痕量筛查。</li>
+      </ul>
+    </div>
+    <div>
+      <h3><span class="tag infer">推断</span> 化学上说得通的</h3>
+      <ul>
+        <li>信号最可能是 NDMA：前体、试剂、酸度三样齐全。</li>
+        <li>若是原位生成，主要发生在淬灭釜里。</li>
+        <li>少一次水洗，清除就少一轮。</li>
+        <li>回收蒸馏保留了 DMA，或者在不断产生新的 DMA。</li>
+        <li>如果确是 0.52 ppm 的 NDMA，就超过了 0.40 ppm 的限度。</li>
+      </ul>
+    </div>
+    <div>
+      <h3><span class="tag todo">待检验</span> 现在答不了的</h3>
+      <ul>
+        <li>这个峰到底是什么，准确浓度多少。</li>
+        <li>是在釜里生成的，还是随溶剂带进来的。</li>
+        <li>旧工艺的批次里有没有 NDMA。</li>
+        <li>每一洗对 NDMA 的清除倍数。</li>
+        <li>成环时釜内的 DMF 是否也在降解出 DMA。</li>
+        <li>有没有别的亚硝胺，比如 NDEA。</li>
+        <li>干燥和贮存期间它会不会继续长。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>五种说法，各自预言不同的图案</h3>
+  <p>每一种解释都对「沿工艺逐点取样会看到什么」和「2×2 对照实验会得到什么」给出不同的预言。选一种说法，看它预言的样子。</p>
+  <div class="chips" id="hyp-chips" role="group" aria-label="选择假说"></div>
+  <div class="stage even">
+    <div>
+      <div class="bar"><span class="bar-title">沿工艺逐点取样，NDMA 的预期形状（不是数据）</span></div>
+      <div class="plot"><svg class="chart" id="hyp-chart" viewBox="0 0 600 300" role="img" aria-label="所选假说下，各取样点 NDMA 的预期相对水平"></svg></div>
+      <div class="legend" id="hyp-legend"></div>
+      <div class="bar"><span class="bar-title">2×2 对照实验的预期结果，外加第五组</span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:1.2rem 2.4rem;align-items:flex-end">
+        <div class="grid22" id="hyp-grid" aria-label="2×2 实验预期"></div>
+        <div class="grid22" id="hyp-fifth" style="grid-template-columns:minmax(0,1fr);max-width:11rem" aria-label="第五组实验预期"></div>
+      </div>
+      <p class="note">圆越大越浓，预期的 NDMA 越高。2×2 能把「溶剂的效应」和「水洗的效应」拆开，但甲和乙在 2×2 里长得几乎一样。分开它们靠两件事：淬灭之前就取样，以及第五组，用原生 DMF 加标 DMA 到 11.8 mg/L。<span class="tag mine">补充</span></p>
+    </div>
+    <div class="panel" id="hyp-panel" aria-live="polite"></div>
+  </div>
+
+  <h3>哪个实验能裁决哪种说法</h3>
+  <div class="tbl-wrap"><table class="mx" aria-label="实验与假说对照表">
+    <thead><tr><th>实验</th><th>出处</th><th class="c">甲<br>原位生成</th><th class="c">乙<br>溶剂带入</th><th class="c">丙<br>清除不足</th><th class="c">丁<br>后期生成</th><th class="c">戊<br>假象或别的</th></tr></thead>
+    <tbody>
+      <tr><td>LC-MS/MS 确证留样，现行批和历史批都测</td><td><span class="tag fact">摘要</span></td><td class="c"><b class="m">○</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="y">●</b></td></tr>
+      <tr><td>原生与回收 DMF 中的 NDMA、DMA</td><td><span class="tag fact">摘要</span></td><td class="c"><b class="m">○</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="m">○</b></td></tr>
+      <tr><td>淬灭前后、每次水洗后的 NDMA</td><td><span class="tag fact">摘要</span></td><td class="c"><b class="y">●</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="n">·</b></td></tr>
+      <tr><td>2×2 对照：溶剂来源 × 水洗次数</td><td><span class="tag fact">摘要</span></td><td class="c"><b class="m">○</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="n">·</b></td></tr>
+      <tr><td>回收商的批次与设备追溯记录</td><td><span class="tag fact">摘要</span></td><td class="c"><b class="n">·</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="m">○</b></td></tr>
+      <tr><td>第五组：原生 DMF 加标 DMA</td><td><span class="tag mine">补充</span></td><td class="c"><b class="y">●</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td></tr>
+      <tr><td>清除剂对照，加高分辨或正交方法</td><td><span class="tag mine">补充</span></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="y">●</b></td></tr>
+      <tr><td>同一批留样隔时间复测</td><td><span class="tag mine">补充</span></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="m">○</b></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note"><b class="red">●</b> 能直接判定　○ 有帮助　· 基本无关。这几种说法并不互斥，最后的答案很可能是其中两三种叠在一起。</p>
+
+  <h3>先后顺序</h3>
+  <ol class="steps">
+    <li><strong>先认身份和浓度。</strong>确证留样，同时做防假象的对照。没有这一步，后面全是空谈。</li>
+    <li><strong>再查溶剂。</strong>R-21 和其他回收批里有没有现成的 NDMA，有多少 DMA，回收商那边它走过哪些罐。</li>
+    <li><strong>沿工艺逐点取样。</strong>淬灭前、淬灭后、每一洗之后、湿滤饼、成品，画出 NDMA、DMA、亚硝酸根三条线。</li>
+    <li><strong>用对照实验把因素拆开。</strong>溶剂来源 × 水洗次数，再加原生 DMF 加标 DMA 的第五组。</li>
+    <li><strong>最后看时间。</strong>留样隔一段时间复测，确认它不再增长。</li>
+  </ol>
+</section>
+
+<!-- 玖 -->
+<section id="control" aria-labelledby="h-control">
+  <div class="head"><span class="seal">玖</span><h2 id="h-control">对策：不让三样东西同时在场</h2><span class="en">Control strategy</span></div>
+  <p>亚硝胺要三样东西凑在一起：可亚硝化的胺、亚硝化试剂、足够的时间。对策不指望哪一道关单独挡住，而是每一关各削掉一样。</p>
+  <div class="gates">
+    <div class="gate"><span class="g-no">关一 · 溶剂</span><h3>回收 DMF 先过检验再进釜</h3>
+      <dl>
+        <dt>做法</dt><dd>回收 DMF 的质量标准加上 DMA、NDMA、NDEA 和亚硝酸根。每批检验，合格才放行。回收商用专用设备，或者清洁后经过验证；每批附带走过哪些罐的谱系。只回收这一步的 DMF，也只回用到这一步。调查期间四唑步骤暂用原生 DMF，R-21 隔离。</dd>
+        <dt>标准</dt><dd>DMA ≤ 1.0 mg/L，这是历史工艺的已知水平，等加标实验出来再调。NDMA 不得检出。</dd>
+        <dt>道理</dt><dd>速率对 DMA 是一级，降到十二分之一，生成也降到十二分之一。同时堵住「带入」这条路。</dd>
+        <dt>代价</dt><dd>每批多一组检测。专用设备会抬高回收费用，但 80% 的溶剂回收大体还划算。</dd>
+      </dl>
+    </div>
+    <div class="gate"><span class="g-no">关二 · 淬灭</span><h3>让胺见不到亚硝酸，或者见得越短越好</h3>
+      <dl>
+        <dt>做法</dt><dd>首选改顺序：先分相，让含产品的有机相离开，再在含叠氮的水相里淬灭。必须同釜淬灭时，按残余叠氮的实测量投亚硝酸钠，用淀粉–碘化钾试纸判终点；低温，限定停留时间；淬灭完立即加氨基磺酸清掉余量。</dd>
+        <dt>标准</dt><dd>亚硝酸钠过量有上限。温度、时间写进批记录并设限。清除后亚硝酸根检测为阴性，才进入水洗。</dd>
+        <dt>道理</dt><dd>速率对亚硝酸是二级，过量减半，速率降到四分之一。清除剂让胺和亚硝酸同时在场的时间归零。</dd>
+        <dt>代价</dt><dd>改顺序要重新验证并申报变更。同釜方案只多一种便宜的辅料和一次中控。</dd>
+      </dl>
+    </div>
+    <div class="gate"><span class="g-no">关三 · 水洗</span><h3>把第三洗请回来，并用数据说话</h3>
+      <dl>
+        <dt>做法</dt><dd>经变更控制恢复第三次水洗。用加标实验测出每一洗对 NDMA 和亚硝酸根的清除倍数，再按数据定水洗次数和用水量。</dd>
+        <dt>标准</dt><dd>末次水洗液亚硝酸根 ≤ 0.5 mg/L，历史工艺是 0.4 mg/L。</dd>
+        <dt>道理</dt><dd>已经生成的 NDMA，只有这一步能带走。</dd>
+        <dt>代价</dt><dd>每批多一次水洗的工时和废水。</dd>
+      </dl>
+    </div>
+    <div class="gate"><span class="g-no">关四 · 放行</span><h3>NDMA 写进质量标准，每批都测</h3>
+      <dl>
+        <dt>做法</dt><dd>用经验证的 LC-MS/MS 每批检验 NDMA。UHPLC-UV 继续管常规有关物质，两种方法各管各的。</dd>
+        <dt>标准</dt><dd>NDMA ≤ 0.40 ppm。内控警戒线取限度的 30%，即 0.12 ppm。方法定量限不高于限度的 10%，即 0.04 ppm。</dd>
+        <dt>道理</dt><dd>前三关降低概率，这一关保证漏网的批次出不了厂。</dd>
+        <dt>代价</dt><dd>仪器和方法验证是最大的一笔投入。可以先委托有资质的实验室，批量上来再自建。</dd>
+      </dl>
+    </div>
+    <div class="gate"><span class="g-no">关五 · 体系</span><h3>别让下一次「小改动」再溜过去</h3>
+      <dl>
+        <dt>做法</dt><dd>「水洗三次改两次」这类改动必须走变更控制和亚硝胺风险评估（ICH Q9、M7）。回收商定期审计，质量协议写明设备、清洁和追溯要求。已放行的批次做风险评估，并按法规与监管机构沟通。</dd>
+        <dt>道理</dt><dd>这次的两个变化，换溶剂来源和减水洗，单看都像是合理的降本，合在一起才出事。</dd>
+      </dl>
+    </div>
+  </div>
+
+  <h3>叠几道关，能降到哪里</h3>
+  <p>下面是按速率式做的相对推演：DMA 一级，亚硝酸二级，时间一级，水洗按假设的清除倍数。它建立在「0.52 ppm 确是 NDMA」之上，并且结果取决于根因是哪一种，所以先选根因。</p>
+  <div class="stage even">
+    <div>
+      <div class="chips" id="stack-mode" role="group" aria-label="根因假设">
+        <button type="button" data-m="form" aria-pressed="true">若是淬灭时原位生成</button>
+        <button type="button" data-m="carry" aria-pressed="false">若是随回收溶剂带入</button>
+      </div>
+      <div class="stack" id="stack"></div>
+      <div class="ctl"><label><span>NDMA 每洗的清除倍数（假设）<output id="o-f2"></output></span><input type="range" id="i-f2" min="1" max="12" step="0.1" value="4"></label></div>
+    </div>
+    <div>
+      <div class="plot"><svg class="chart" id="stack-chart" viewBox="0 0 560 150" role="img" aria-label="叠加控制措施后 NDMA 的预计浓度"></svg></div>
+      <div class="p-eq" id="stack-eq"></div>
+      <p class="verdict" id="stack-verdict"></p>
+    </div>
+  </div>
+
+  <h3>怎么证明它一直有效</h3>
+  <ol class="steps">
+    <li><strong>工艺验证批。</strong>连续至少三批逐点取样，确认成品 NDMA 稳定低于限度的 10%–30%。</li>
+    <li><strong>三张控制图。</strong>进料 DMF 的 DMA、末次水洗液的亚硝酸根、成品的 NDMA，各设警戒限和行动限，持续画下去。</li>
+    <li><strong>变更即重评。</strong>溶剂来源、回收商、水洗次数、淬灭参数、批量，任何一项变动都触发重新评估。</li>
+    <li><strong>供应商。</strong>回收商定期审计；每批回收溶剂附谱系和检验报告。</li>
+    <li><strong>稳定性。</strong>留样长期考察，NDMA 不随时间增长。</li>
+  </ol>
+</section>
+
+<!-- 拾 -->
+<section id="notes" aria-labelledby="h-notes">
+  <div class="head"><span class="seal">拾</span><h2 id="h-notes">把握与出处</h2><span class="en">Sources and confidence</span></div>
+  <div class="two">
+    <div>
+      <h3>哪些是你的，哪些是我补的</h3>
+      <p>案情数据、限度计算、三种可能来源（釜内生成、溶剂带入、交叉污染）、LC-MS/MS 加对照品和同位素内标、比较两种 DMF、淬灭前后和逐洗取样、溶剂来源 × 水洗次数的对照实验、回收商追溯记录，这些都来自案例文件和你的摘要。</p>
+      <p>我补进去的：含量指标对 DMA 是盲的；NDMA 与 DMF 沸点几乎相同，蒸馏分不开；旧工艺的 DMA 按化学计量也够超标，所以要测历史留样；用速率式判断生成发生在哪一步，以及量级上的缺口；2×2 分不开「生成」和「带入」，要加淬灭前取样和加标 DMA 的第五组；残留 DMF 的同位素峰可能造成假阳性；干燥贮存期间的后期生成；按根因选择对策。</p>
+      <h3>这页里的假设</h3>
+      <ul class="refs">
+        <li>速率常数 k = 0.0017 M⁻²·s⁻¹ 和最适 pH 3.4 取自 Mirvish (1975) 的稀水溶液数据。</li>
+        <li>「每洗稀释 8 倍」由案例的两个亚硝酸根数字推出，前提是两种工艺起点和效率相同。</li>
+        <li>每千克 API 用 8 L DMF、NDMA 每洗清除 4 倍，是演示用的假设值，滑块可改。</li>
+        <li>同位素峰干扰按等摩尔等响应估算，只说明量级。</li>
+        <li>限度的 10% 与 30% 这两条线是亚硝胺控制里常见的做法，请以 Health Canada 现行指南的原文为准。</li>
+      </ul>
+    </div>
+    <div>
+      <h3>建议核对的文献</h3>
+      <p class="note">前七条是我凭记忆列的，引用之前请逐条查原文；后四条是案例文件自己的参考文献。</p>
+      <ol class="refs">
+        <li>Mirvish, S. S. Formation of N-Nitroso Compounds: Chemistry, Kinetics, and in Vivo Occurrence. <i>Toxicol. Appl. Pharmacol.</i> <b>1975</b>, <i>31</i>, 325–351.</li>
+        <li>Ashworth, I. W.; Dirat, O.; Teasdale, A.; Whiting, M. Potential for the Formation of N-Nitrosamines during the Manufacture of Active Pharmaceutical Ingredients: An Assessment of the Risk Posed by Trace Nitrite in Water. <i>Org. Process Res. Dev.</i> <b>2020</b>, <i>24</i>, 1629–1646.</li>
+        <li>López-Rodríguez, R.; McManus, J. A.; Murphy, N. S.; Ott, M. A.; Burns, M. J. Pathways for N-Nitroso Compound Formation: Secondary Amines and Beyond. <i>Org. Process Res. Dev.</i> <b>2020</b>, <i>24</i>, 1558–1585.</li>
+        <li>Yang, J.; Marzan, T. A.; Ye, W.; Sommers, C. D.; Rodriguez, J. D.; Keire, D. A. A Cautionary Tale: Quantitative LC-HRMS Analytical Procedures for the Analysis of N-Nitrosodimethylamine in Metformin. <i>AAPS J.</i> <b>2020</b>, <i>22</i>, 89.</li>
+        <li>Parr, M. K.; Joseph, J. F. NDMA Impurity in Valsartan and Other Pharmaceutical Products: Analytical Methods for the Determination of N-Nitrosamines. <i>J. Pharm. Biomed. Anal.</i> <b>2019</b>, <i>164</i>, 536–549.</li>
+        <li>Himo, F.; Demko, Z. P.; Noodleman, L.; Sharpless, K. B. Mechanisms of Tetrazole Formation by Addition of Azide to Nitriles. <i>J. Am. Chem. Soc.</i> <b>2002</b>, <i>124</i>, 12210–12216.</li>
+        <li>Burns, M. J.; Teasdale, A.; Elliott, E.; Barber, C. G. Controlling a Cohort: Use of Mirabilis-Based Purge Calculations to Understand Nitrosamine-Related Risk and Control Strategy Options. <i>Org. Process Res. Dev.</i> <b>2020</b>, <i>24</i>, 1531–1535.</li>
+        <li>案例文献 7：Wichitnithad, W. 等，亚硝化途径与根因综述，<i>Saudi Pharm. J.</i> <b>2023</b>, <i>31</i>, 295–311.</li>
+        <li>案例文献 8：Manchuri, K. M. 等，亚硝胺分析方法综述，<i>Chem. Res. Toxicol.</i> <b>2024</b>, <i>37</i>, 1456–1483.</li>
+        <li>案例文献 6：Golob, N. 等，痕量亚硝酸根与 NDMA 在制剂中的生成，<i>J. Pharm. Sci.</i> <b>2023</b>, <i>112</i>, 1277–1286.</li>
+        <li>案例文献 13：Chuang, Y.-H. 等，分析过程中人为生成亚硝胺，<i>Chemosphere</i> <b>2019</b>, <i>221</i>, 597–605.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>依据 CSU Chemistry Society《A Pernicious Manufacturing Problem》（Fall 2026 Case Competition）与摘要《Find Potential Nitrosamine Contamination in Nerivartan Manufacturing》制作。Nerivartan 和 CSU O.W.C.A. 制药都是案例虚构的。</p>
+  <p>竞赛规则要求记录 AI 的使用。这一页由 Claude 根据上述两份文件生成，里面的化学解释、估算和建议在用进提交材料之前，都需要你自己核对。</p>
+</footer>
+</div>
+
+<script data-inline="geom.js">
+const GEOM = {"mol":{"dmf":{"el":["C","O","N","C","C","H","H","H","H","H","H","H"],"xyz":[[0.86,-1.244,0.0],[2.08,-1.244,0.0],[0.085,-0.138,0.0],[0.698,1.176,0.0],[-1.363,-0.214,-0.0],[0.277,-2.177,0.0],[1.32,1.297,-0.887],[-0.073,1.947,-0.0],[1.32,1.297,0.887],[-1.708,-0.745,0.887],[-1.788,0.789,0.0],[-1.708,-0.745,-0.887]],"bonds":[[0,1,2],[0,2,1],[2,3,1],[2,4,1],[0,5,1],[3,6,1],[3,7,1],[3,8,1],[4,9,1],[4,10,1],[4,11,1]]},"dma":{"el":["N","C","C","H","H","H","H","H","H","H"],"xyz":[[-0.401,-0.596,0.083],[1.057,-0.596,0.083],[-0.948,0.756,0.083],[-0.733,-1.078,-0.751],[1.429,-0.084,0.97],[1.429,-1.621,0.083],[1.429,-0.084,-0.804],[-0.612,1.293,-0.804],[-2.037,0.718,0.083],[-0.612,1.293,0.97]],"bonds":[[0,1,1],[0,2,1],[0,3,1],[1,4,1],[1,5,1],[1,6,1],[2,7,1],[2,8,1],[2,9,1]]},"ndma":{"el":["N","N","O","C","C","H","H","H","H","H","H"],"xyz":[[0.311,0.086,-0.0],[1.651,0.086,-0.0],[2.151,-1.037,-0.0],[-0.414,-1.169,-0.0],[-0.347,1.378,0.0],[-0.157,-1.748,0.887],[-1.488,-0.98,0.0],[-0.157,-1.748,-0.887],[-0.06,1.943,-0.887],[-1.429,1.246,-0.0],[-0.06,1.943,0.887]],"bonds":[[0,1,1],[1,2,2],[0,3,1],[0,4,1],[3,5,1],[3,6,1],[3,7,1],[4,8,1],[4,9,1],[4,10,1]]},"hono":{"el":["N","O","O","H"],"xyz":[[0.197,-0.633,0.0],[1.367,-0.633,0.0],[-0.308,0.705,0.0],[-1.257,0.56,-0.0]],"bonds":[[0,1,2],[0,2,1],[2,3,1]]},"n2o3":{"el":["N","N","O","O","O"],"xyz":[[-0.602,0.229,-0.0],[1.258,0.229,-0.0],[1.553,-0.872,-0.0],[-1.056,-0.893,-0.0],[-1.152,1.307,0.0]],"bonds":[[0,1,1],[1,2,2],[0,3,1.5],[0,4,1.5]]},"tetrazole":{"el":["C","N","N","N","N","H","H"],"xyz":[[-0.721,0.291,0.0],[0.061,-0.785,0.0],[1.325,-0.374,0.0],[1.325,0.956,0.0],[0.061,1.367,0.0],[-1.801,0.291,0.0],[-0.251,-1.745,0.0]],"bonds":[[0,1,1],[1,2,1],[2,3,2],[3,4,1],[4,0,2],[0,5,1],[1,6,1]]},"hn3":{"el":["N","H","N","N"],"xyz":[[0.079,-0.836,0.0],[1.099,-0.836,0.0],[-0.324,0.337,0.0],[-0.855,1.335,-0.0]],"bonds":[[0,1,1],[0,2,2],[2,3,2]]}},"rx":{"tetrazole":{"el":["C","C","C","C","C","C","H","H","H","H","H","C","N","N","N","N","H"],"frames":[{"xyz":[[0.199,-0.413,0.0],[-0.5,0.797,0.0],[-1.897,0.797,0.0],[-2.595,-0.413,0.0],[-1.897,-1.623,0.0],[-0.5,-1.623,0.0],[0.042,1.735,0.0],[-2.438,1.735,0.0],[-3.678,-0.413,0.0],[-2.438,-2.561,0.0],[0.042,-2.561,0.0],[1.639,-0.413,0.0],[2.799,-0.413,0.0],[3.102,3.187,0.0],[4.182,2.717,0.0],[5.262,2.247,0.0],[0.102,3.887,0.0]],"bonds":[[0,1,1.5],[1,2,1.5],[2,3,1.5],[3,4,1.5],[4,5,1.5],[5,0,1.5],[1,6,1],[2,7,1],[3,8,1],[4,9,1],[5,10,1],[0,11,1],[11,12,3],[13,14,2],[14,15,2]]},{"xyz":[[0.199,-0.413,0.0],[-0.5,0.797,0.0],[-1.897,0.797,0.0],[-2.595,-0.413,0.0],[-1.897,-1.623,0.0],[-0.5,-1.623,0.0],[0.042,1.735,0.0],[-2.438,1.735,0.0],[-3.678,-0.413,0.0],[-2.438,-2.561,0.0],[0.042,-2.561,0.0],[1.642,-0.413,0.0],[2.782,-0.633,0.0],[2.252,1.887,0.0],[3.352,1.487,0.0],[4.422,1.047,0.0],[0.302,3.687,0.0]],"bonds":[[0,1,1.5],[1,2,1.5],[2,3,1.5],[3,4,1.5],[4,5,1.5],[5,0,1.5],[1,6,1],[2,7,1],[3,8,1],[4,9,1],[5,10,1],[0,11,1],[11,12,3],[13,14,2],[14,15,2],[11,13,0.5]]},{"xyz":[[0.199,-0.413,0.0],[-0.5,0.797,0.0],[-1.897,0.797,0.0],[-2.595,-0.413,0.0],[-1.897,-1.623,0.0],[-0.5,-1.623,0.0],[0.042,1.735,0.0],[-2.438,1.735,0.0],[-3.678,-0.413,0.0],[-2.438,-2.561,0.0],[0.042,-2.561,0.0],[1.662,-0.413,0.0],[2.602,-1.273,0.0],[2.382,0.807,0.0],[3.582,0.947,0.0],[4.522,0.307,0.0],[0.502,3.487,0.0]],"bonds":[[0,1,1.5],[1,2,1.5],[2,3,1.5],[3,4,1.5],[4,5,1.5],[5,0,1.5],[1,6,1],[2,7,1],[3,8,1],[4,9,1],[5,10,1],[0,11,1],[11,12,2],[11,13,1],[13,14,1],[14,15,2],[15,12,0.4]]},{"xyz":[[0.199,-0.413,0.0],[-0.5,0.797,0.0],[-1.897,0.797,0.0],[-2.595,-0.413,0.0],[-1.897,-1.623,0.0],[-0.5,-1.623,0.0],[0.042,1.735,0.0],[-2.438,1.735,0.0],[-3.678,-0.413,0.0],[-2.438,-2.561,0.0],[0.042,-2.561,0.0],[1.669,-0.413,0.0],[2.45,-1.489,0.0],[2.45,0.663,0.0],[3.715,0.252,0.0],[3.715,-1.078,0.0],[1.102,3.087,0.0]],"bonds":[[0,1,1.5],[1,2,1.5],[2,3,1.5],[3,4,1.5],[4,5,1.5],[5,0,1.5],[1,6,1],[2,7,1],[3,8,1],[4,9,1],[5,10,1],[0,11,1],[11,12,1.5],[11,13,1.5],[13,14,1.5],[14,15,1.5],[15,12,1.5]]},{"xyz":[[0.199,-0.413,0.0],[-0.5,0.797,0.0],[-1.897,0.797,0.0],[-2.595,-0.413,0.0],[-1.897,-1.623,0.0],[-0.5,-1.623,0.0],[0.042,1.735,0.0],[-2.438,1.735,0.0],[-3.678,-0.413,0.0],[-2.438,-2.561,0.0],[0.042,-2.561,0.0],[1.669,-0.413,0.0],[2.45,-1.489,0.0],[2.45,0.663,0.0],[3.715,0.252,0.0],[3.715,-1.078,0.0],[2.138,1.623,0.0]],"bonds":[[0,1,1.5],[1,2,1.5],[2,3,1.5],[3,4,1.5],[4,5,1.5],[5,0,1.5],[1,6,1],[2,7,1],[3,8,1],[4,9,1],[5,10,1],[0,11,1],[11,12,2],[11,13,1],[13,14,1],[14,15,2],[15,12,1],[13,16,1]]}]},"protonation":{"el":["N","O","O","H","H"],"frames":[{"xyz":[[0.282,-1.406,0.0],[1.522,-1.406,0.0],[-0.242,-0.282,0.0],[-2.773,-0.877,-0.0],[2.452,2.728,0.0]],"bonds":[[0,1,1.5],[0,2,1.5]]},{"xyz":[[0.335,-1.493,0.0],[1.502,-1.4,0.0],[-0.274,-0.199,0.0],[-1.209,-0.419,-0.0],[1.361,1.557,0.0]],"bonds":[[0,1,2],[0,2,1],[2,3,1]]},{"xyz":[[0.335,-1.493,0.0],[1.432,-1.406,0.0],[-0.418,0.105,0.0],[-1.355,0.313,0.0],[0.018,0.96,0.0]],"bonds":[[0,1,2.5],[0,2,0.5],[2,3,1],[2,4,1]]},{"xyz":[[0.335,-1.493,0.0],[1.392,-1.409,0.0],[-1.399,2.185,0.0],[-2.336,2.393,0.0],[-0.963,3.041,0.0]],"bonds":[[0,1,3],[2,3,1],[2,4,1]]}]},"quench":{"el":["N","N","N","N","O"],"frames":[{"xyz":[[-0.21,-1.839,0.0],[-1.389,-1.774,0.0],[-2.567,-1.709,0.0],[1.91,2.314,-0.0],[2.968,2.24,-0.0]],"bonds":[[0,1,2],[1,2,2],[3,4,3]]},{"xyz":[[0.25,-0.895,0.0],[-0.928,-0.831,0.0],[-2.106,-0.766,0.0],[1.362,1.191,-0.0],[2.42,1.117,-0.0]],"bonds":[[0,1,2],[1,2,2],[3,4,3],[0,3,0.5]]},{"xyz":[[0.474,-0.513,0.0],[-0.769,-0.383,0.0],[-1.899,-0.383,0.0],[1.11,0.79,-0.0],[2.277,0.708,-0.0]],"bonds":[[2,1,2.5],[1,0,1.5],[0,3,1],[3,4,2]]},{"xyz":[[0.332,-0.311,-0.0],[-1.682,-0.333,0.0],[-2.782,-0.333,0.0],[1.271,0.317,-0.0],[2.26,0.979,-0.0]],"bonds":[[2,1,3],[0,3,2.5],[3,4,1.5]]},{"xyz":[[1.23,-0.361,-0.0],[-3.879,-0.212,0.0],[-4.979,-0.212,0.0],[2.169,0.268,-0.0],[3.158,0.93,-0.0]],"bonds":[[2,1,3],[0,3,2.5],[3,4,1.5]]}]},"hydrolysis":{"el":["C","O","N","H","C","C","H","H","H","H","H","H","O","H","H"],"frames":[{"xyz":[[1.032,-1.534,-0.37],[2.252,-1.534,-0.37],[0.258,-0.428,-0.37],[0.449,-2.466,-0.37],[0.87,0.887,-0.37],[-1.19,-0.504,-0.37],[1.492,1.008,-1.257],[0.1,1.657,-0.37],[1.492,1.008,0.517],[-1.536,-1.034,0.517],[-1.616,0.5,-0.37],[-1.536,-1.034,-1.257],[1.589,-2.329,3.899],[1.786,-2.61,4.795],[1.042,-1.548,4.007]],"bonds":[[0,1,2],[0,3,1],[2,4,1],[2,5,1],[4,6,1],[4,7,1],[4,8,1],[5,9,1],[5,10,1],[5,11,1],[12,13,1],[0,2,1],[12,14,1]]},{"xyz":[[1.032,-1.534,-0.37],[2.252,-1.534,-0.37],[0.258,-0.428,-0.37],[0.449,-2.466,-0.37],[0.87,0.887,-0.37],[-1.19,-0.504,-0.37],[1.492,1.008,-1.257],[0.1,1.657,-0.37],[1.492,1.008,0.517],[-1.536,-1.034,0.517],[-1.616,0.5,-0.37],[-1.536,-1.034,-1.257],[1.13,-1.674,1.299],[1.327,-1.955,2.195],[0.583,-0.892,1.407]],"bonds":[[0,1,2],[0,3,1],[2,4,1],[2,5,1],[4,6,1],[4,7,1],[4,8,1],[5,9,1],[5,10,1],[5,11,1],[12,13,1],[0,2,1],[12,14,1],[0,12,0.5]]},{"xyz":[[1.243,-1.81,-0.142],[2.253,-1.476,-0.696],[-0.608,0.827,0.166],[0.433,-2.394,-0.604],[0.3,1.641,-0.633],[-1.703,0.288,-0.631],[-0.239,2.48,-1.072],[1.105,2.026,-0.007],[0.732,1.041,-1.434],[-1.309,-0.337,-1.432],[-2.361,-0.313,-0.003],[-2.281,1.102,-1.069],[0.934,-1.527,1.131],[1.673,-1.014,1.494],[-0.088,0.048,0.568]],"bonds":[[0,1,2],[0,3,1],[2,4,1],[2,5,1],[4,6,1],[4,7,1],[4,8,1],[5,9,1],[5,10,1],[5,11,1],[12,13,1],[0,12,1],[2,14,1]]},{"xyz":[[1.529,-2.22,-0.142],[2.54,-1.886,-0.696],[-1.927,2.711,0.166],[0.72,-2.804,-0.604],[-1.019,3.525,-0.633],[-3.023,2.172,-0.631],[-1.559,4.364,-1.072],[-0.214,3.91,-0.007],[-0.587,2.925,-1.434],[-2.629,1.547,-1.432],[-3.68,1.571,-0.003],[-3.6,2.986,-1.069],[1.221,-1.936,1.131],[1.96,-1.424,1.494],[-1.407,1.932,0.568]],"bonds":[[0,1,2],[0,3,1],[2,4,1],[2,5,1],[4,6,1],[4,7,1],[4,8,1],[5,9,1],[5,10,1],[5,11,1],[12,13,1],[0,12,1],[2,14,1]]}]},"nitrosation":{"el":["N","C","C","H","H","H","H","H","H","H","N","O","N","O","O"],"frames":[{"xyz":[[0.516,0.478,-0.085],[1.974,0.478,-0.085],[-0.03,1.83,-0.085],[0.184,-0.004,-0.92],[2.347,0.99,0.802],[2.347,-0.546,-0.085],[2.347,0.99,-0.972],[0.305,2.367,-0.972],[-1.119,1.792,-0.085],[0.305,2.367,0.802],[-1.662,-2.498,2.841],[-0.902,-1.951,2.19],[-2.713,-3.463,1.648],[-2.364,-3.297,0.501],[-3.604,-4.133,2.118]],"bonds":[[0,1,1],[0,2,1],[1,4,1],[1,5,1],[1,6,1],[2,7,1],[2,8,1],[2,9,1],[0,3,1],[10,12,1],[10,11,2],[12,13,1.5],[12,14,1.5]]},{"xyz":[[0.516,0.478,-0.085],[1.974,0.478,-0.085],[-0.03,1.83,-0.085],[0.184,-0.004,-0.92],[2.347,0.99,0.802],[2.347,-0.546,-0.085],[2.347,0.99,-0.972],[0.305,2.367,-0.972],[-1.119,1.792,-0.085],[0.305,2.367,0.802],[-0.195,-0.616,1.809],[0.565,-0.069,1.158],[-1.245,-1.581,0.616],[-0.897,-1.416,-0.531],[-2.136,-2.251,1.086]],"bonds":[[0,1,1],[0,2,1],[1,4,1],[1,5,1],[1,6,1],[2,7,1],[2,8,1],[2,9,1],[0,3,1],[10,12,1],[10,11,2],[12,13,1.5],[12,14,1.5],[0,10,0.5]]},{"xyz":[[0.63,0.922,0.049],[1.994,0.727,-0.402],[-0.191,2.038,-0.38],[0.291,0.43,-0.803],[2.083,-0.229,-0.919],[2.279,1.526,-1.086],[2.673,0.731,0.451],[-0.493,2.631,0.483],[0.37,2.672,-1.066],[-1.084,1.671,-0.886],[0.074,0.049,0.9],[0.818,-0.874,1.227],[-1.782,-2.074,0.006],[-1.434,-1.909,-1.14],[-2.673,-2.744,0.477]],"bonds":[[0,1,1],[0,2,1],[1,4,1],[1,5,1],[1,6,1],[2,7,1],[2,8,1],[2,9,1],[0,3,1],[0,10,1],[10,11,2],[12,13,1.5],[12,14,1.5]]},{"xyz":[[0.63,0.922,0.049],[1.994,0.727,-0.402],[-0.191,2.038,-0.38],[-1.507,-2.033,-1.159],[2.083,-0.229,-0.919],[2.279,1.526,-1.086],[2.673,0.731,0.451],[-0.493,2.631,0.483],[0.37,2.672,-1.066],[-1.084,1.671,-0.886],[0.074,0.049,0.9],[0.818,-0.874,1.227],[-2.527,-2.835,0.202],[-2.18,-2.717,-1.18],[-3.355,-3.648,0.353]],"bonds":[[0,1,1],[0,2,1],[1,4,1],[1,5,1],[1,6,1],[2,7,1],[2,8,1],[2,9,1],[0,10,1],[10,11,2],[12,14,2],[12,13,1],[13,3,1]]},{"xyz":[[0.63,0.922,0.049],[1.994,0.727,-0.402],[-0.191,2.038,-0.38],[-2.988,-3.792,-1.197],[2.083,-0.229,-0.919],[2.279,1.526,-1.086],[2.673,0.731,0.451],[-0.493,2.631,0.483],[0.37,2.672,-1.066],[-1.084,1.671,-0.886],[0.074,0.049,0.9],[0.818,-0.874,1.227],[-4.008,-4.595,0.165],[-3.661,-4.477,-1.218],[-4.836,-5.407,0.316]],"bonds":[[0,1,1],[0,2,1],[1,4,1],[1,5,1],[1,6,1],[2,7,1],[2,8,1],[2,9,1],[0,10,1],[10,11,2],[12,14,2],[12,13,1],[13,3,1]]}]}}};
+</script>
+<script data-inline="ink3d.js">
+/* 水墨三维：分子与反应（墨点 + 笔触）、速率曲面（层叠的山）。纯 canvas 2D，无依赖。 */
+const Ink3D = (() => {
+  const TAU = Math.PI * 2;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const cssVar = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const hex = (h) => { h = h.replace('#', ''); if (h.length === 3) h = [...h].map((c) => c + c).join(''); return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)); };
+  const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+  const rgb = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+  const stages = [];
+  let T;
+  function readTheme() {
+    T = {};
+    for (const [k, v] of Object.entries({ paper: '--paper', ink: '--ink', soft: '--ink-soft', pale: '--ink-pale', red: '--cinnabar', blue: '--indigo', ochre: '--ochre' })) T[k] = hex(cssVar(v));
+    T.dark = T.paper[0] < 90;
+    stages.forEach((s) => { s.dirty = true; });
+  }
+  readTheme();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readTheme);
+
+  class Stage {
+    constructor(canvas, o = {}) {
+      this.cv = canvas; this.ctx = canvas.getContext('2d');
+      this.yaw = o.yaw ?? -0.5; this.pitch = o.pitch ?? 0.3;
+      this.yaw0 = this.yaw; this.lim = o.lim || { pitch: [-1.45, 1.45] };
+      this.motion = reduce ? null : (o.motion || null);
+      this.dragging = false; this.touched = false; this.dirty = true; this.visible = false; this.clock = 0;
+      this.w = this.h = 1; this.dpr = 1;
+      this._bind(); stages.push(this);
+    }
+    _bind() {
+      const cv = this.cv; let px = 0, py = 0;
+      cv.addEventListener('pointerdown', (e) => { this.dragging = true; this.touched = true; px = e.clientX; py = e.clientY; cv.setPointerCapture(e.pointerId); cv.classList.add('grabbing'); });
+      cv.addEventListener('pointermove', (e) => {
+        if (!this.dragging) return;
+        this.rotate((e.clientX - px) * 0.01, (e.clientY - py) * 0.01); px = e.clientX; py = e.clientY;
+      });
+      const end = () => { this.dragging = false; cv.classList.remove('grabbing'); };
+      cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+      cv.addEventListener('keydown', (e) => {
+        const d = { ArrowLeft: [-0.12, 0], ArrowRight: [0.12, 0], ArrowUp: [0, -0.1], ArrowDown: [0, 0.1] }[e.key];
+        if (!d) return; e.preventDefault(); this.touched = true; this.rotate(d[0], d[1]);
+      });
+      new ResizeObserver(() => this.resize()).observe(cv);
+      new IntersectionObserver((es) => { this.visible = es[0].isIntersecting; if (this.visible) this.dirty = true; }).observe(cv);
+    }
+    rotate(dy, dp) {
+      this.yaw += dy; this.pitch += dp;
+      if (this.lim.yaw) this.yaw = clamp(this.yaw, ...this.lim.yaw);
+      if (this.lim.pitch) this.pitch = clamp(this.pitch, ...this.lim.pitch);
+      this.dirty = true;
+    }
+    resize() {
+      const r = this.cv.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+      this.cv.width = Math.round(r.width * this.dpr); this.cv.height = Math.round(r.height * this.dpr);
+      this.w = r.width; this.h = r.height; this.dirty = true;
+    }
+    cam() { this._cy = Math.cos(this.yaw); this._sy = Math.sin(this.yaw); this._cp = Math.cos(this.pitch); this._sp = Math.sin(this.pitch); }
+    proj(p, k, D, cx, cy) {
+      const x1 = p[0] * this._cy + p[2] * this._sy, z1 = -p[0] * this._sy + p[2] * this._cy;
+      const y2 = p[1] * this._cp - z1 * this._sp, z2 = p[1] * this._sp + z1 * this._cp;
+      const s = D / (D - z2);
+      return { x: cx + x1 * s * k, y: cy - y2 * s * k, z: z2, s };
+    }
+    step(dt) {
+      this.clock += dt;
+      if (this.motion && !this.dragging && !this.touched) {
+        if (this.motion === 'spin') this.yaw += dt * 0.32;
+        else this.yaw = this.yaw0 + Math.sin(this.clock * 0.55) * 0.3;
+        this.dirty = true;
+      }
+      this.tick && this.tick(dt);
+      if (this.dirty && this.w > 1) { this.dirty = false; this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); this.ctx.clearRect(0, 0, this.w, this.h); this.cam(); this.draw(); }
+    }
+  }
+
+  /* ---------- 分子 / 反应 ---------- */
+  const RAD = { C: 0.44, N: 0.42, O: 0.4, H: 0.25 };
+  const ease = (u) => u * u * (3 - 2 * u);
+  class MolView extends Stage {
+    constructor(canvas, o = {}) {
+      super(canvas, o);
+      this.el = []; this.frames = []; this.t = 0; this.playing = false; this.segDur = o.segDur || 2.6; this.holdEnd = 1.6; this._hold = 0;
+      this.onTime = o.onTime || null;
+    }
+    load(obj, view) {
+      this.el = obj.el;
+      this.frames = obj.frames || [{ xyz: obj.xyz, bonds: obj.bonds }];
+      this.t = 0; this._hold = 0;
+      let R = 0;
+      for (const f of this.frames) for (const p of f.xyz) R = Math.max(R, Math.hypot(p[0], p[1], p[2]));
+      this.R = R + 0.6; this.zoom = (view && view.zoom) || 1;
+      this.seed = this.el.map((_, i) => [Math.sin(i * 12.9898) * 43758.5453 % TAU, Math.sin(i * 78.233) * 12345.678 % TAU]);
+      this.maps = this.frames.map((f) => { const m = new Map(); f.bonds.forEach(([i, j, o]) => m.set(i < j ? i + '-' + j : j + '-' + i, o)); return m; });
+      if (view) { this.yaw = this.yaw0 = view.yaw ?? this.yaw; this.pitch = view.pitch ?? this.pitch; this.motion = reduce ? null : (view.motion ?? this.motion); this.touched = false; this.clock = 0; }
+      this.dirty = true; this.onTime && this.onTime(0, this);
+    }
+    get last() { return this.frames.length - 1; }
+    play() { if (this.last < 1) return; if (this.t >= this.last) this.t = 0; this.playing = true; this._hold = 0; }
+    pause() { this.playing = false; }
+    seek(t) { this.t = clamp(t, 0, this.last); this.dirty = true; this.onTime && this.onTime(this.t, this); }
+    tick(dt) {
+      if (!this.playing) return;
+      if (this.t >= this.last) { this._hold += dt; if (this._hold > this.holdEnd) { this._hold = 0; this.t = 0; } }
+      else this.t = Math.min(this.last, this.t + dt / this.segDur);
+      this.dirty = true; this.onTime && this.onTime(this.t, this);
+    }
+    state() {
+      const k = Math.min(Math.floor(this.t), Math.max(0, this.last - 1)), u = this.last ? ease(clamp(this.t - k, 0, 1)) : 0;
+      const A = this.frames[k], B = this.frames[Math.min(k + 1, this.last)];
+      const xyz = A.xyz.map((p, i) => [p[0] + (B.xyz[i][0] - p[0]) * u, p[1] + (B.xyz[i][1] - p[1]) * u, p[2] + (B.xyz[i][2] - p[2]) * u]);
+      const ma = this.maps[k], mb = this.maps[Math.min(k + 1, this.last)], bonds = [];
+      for (const key of new Set([...ma.keys(), ...mb.keys()])) {
+        const a = ma.get(key) || 0, b = mb.get(key) || 0, o = a + (b - a) * u;
+        if (o < 0.06) continue;
+        const [i, j] = key.split('-').map(Number);
+        bonds.push([i, j, o, o < 0.9 || (u > 0.03 && u < 0.97 && a !== b && Math.min(a, b) < 0.9)]);
+      }
+      return { xyz, bonds };
+    }
+    draw() {
+      const { ctx, w, h } = this, st = this.state();
+      const D = this.R * 4.6, k = Math.min(Math.min(w, h) / 2 / (this.R * 1.1) * this.zoom, h * 0.17), cx = w / 2, cy = h / 2 - h * 0.02;
+      // 墨影
+      ctx.save(); ctx.translate(cx, Math.min(h * 0.9, cy + this.R * k * 0.93)); ctx.scale(1, 0.2);
+      const sh = ctx.createRadialGradient(0, 0, 0, 0, 0, this.R * k * 0.95);
+      sh.addColorStop(0, rgb(T.ink, T.dark ? 0.22 : 0.13)); sh.addColorStop(1, rgb(T.ink, 0));
+      ctx.fillStyle = sh; ctx.beginPath(); ctx.arc(0, 0, this.R * k * 0.95, 0, TAU); ctx.fill(); ctx.restore();
+
+      const P = st.xyz.map((p) => this.proj(p, k, D, cx, cy));
+      let z0 = Infinity, z1 = -Infinity;
+      P.forEach((p) => { z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z); });
+      P.forEach((p, i) => { p.r = RAD[this.el[i]] * k * p.s; p.f = z1 - z0 < 0.3 ? 0 : (z1 - p.z) / (z1 - z0) * 0.62; });
+      const items = P.map((p, i) => ({ z: p.z, i }));
+      st.bonds.forEach((b) => items.push({ z: (P[b[0]].z + P[b[1]].z) / 2 - 0.02, b }));
+      items.sort((a, b) => a.z - b.z);
+      for (const it of items) it.b ? this._bond(P[it.b[0]], P[it.b[1]], it.b[2], it.b[3], k) : this._atom(P[it.i], it.i);
+    }
+    _bond(a, b, order, live, k) {
+      const { ctx } = this;
+      let dx = b.x - a.x, dy = b.y - a.y; const L = Math.hypot(dx, dy); if (L < 1) return; dx /= L; dy /= L;
+      const ra = a.r * 0.8, rb = b.r * 0.8; if (L <= ra + rb + 1) return;
+      const x1 = a.x + dx * ra, y1 = a.y + dy * ra, x2 = b.x - dx * rb, y2 = b.y - dy * rb, nx = -dy, ny = dx;
+      const fade = (a.f + b.f) / 2, wA = 0.11 * k * a.s, wB = 0.11 * k * b.s, g = 0.2 * k * (a.s + b.s) / 2;
+      const l1 = clamp(order - 1, 0, 1), l2 = clamp(order - 2, 0, 1);
+      const lines = [[-g / 2 * l1 * (1 - l2), Math.min(1, order)]];
+      if (l1 > 0.03) lines.push([g / 2 * l1 * (1 + l2), l1]);
+      if (l2 > 0.03) lines.push([-g * l2, l2]);
+      lines.forEach(([off, alpha], n) => {
+        if (n === 0 && order < 0.9) {
+          ctx.save(); ctx.strokeStyle = rgb(T.red, clamp(order * 1.7, 0.15, 1)); ctx.lineWidth = Math.max(1.6, (wA + wB) / 2 * 0.8); ctx.lineCap = 'round';
+          ctx.setLineDash([Math.max(3, g * 0.55), Math.max(4, g * 0.7)]);
+          ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.restore(); return;
+        }
+        const col = live && n > 0 ? T.red : mix(T.ink, T.paper, fade * 0.75);
+        ctx.fillStyle = rgb(col, n === 0 ? 1 : 0.35 + alpha * 0.65);
+        const ox = nx * off, oy = ny * off;
+        ctx.beginPath();
+        ctx.moveTo(x1 + ox + nx * wA / 2, y1 + oy + ny * wA / 2); ctx.lineTo(x2 + ox + nx * wB / 2, y2 + oy + ny * wB / 2);
+        ctx.lineTo(x2 + ox - nx * wB / 2, y2 + oy - ny * wB / 2); ctx.lineTo(x1 + ox - nx * wA / 2, y1 + oy - ny * wA / 2);
+        ctx.closePath(); ctx.fill();
+      });
+    }
+    _atom(p, i) {
+      const { ctx } = this, el = this.el[i], r = p.r, [s1, s2] = this.seed[i];
+      const col = el === 'N' ? T.blue : el === 'O' ? T.red : T.ink;
+      const path = (rr) => {
+        ctx.beginPath();
+        for (let a = 0; a <= 36; a++) { const th = a / 36 * TAU, q = rr * (1 + 0.035 * Math.sin(3 * th + s1) + 0.025 * Math.sin(5 * th + s2)); a ? ctx.lineTo(p.x + q * Math.cos(th), p.y + q * Math.sin(th)) : ctx.moveTo(p.x + q * Math.cos(th), p.y + q * Math.sin(th)); }
+        ctx.closePath();
+      };
+      if (el === 'H') {
+        const g = ctx.createRadialGradient(p.x - r * 0.3, p.y - r * 0.35, r * 0.1, p.x, p.y, r);
+        g.addColorStop(0, rgb(T.paper)); g.addColorStop(1, rgb(mix(T.paper, T.ink, 0.16 - p.f * 0.1)));
+        ctx.fillStyle = g; path(r); ctx.fill();
+        ctx.strokeStyle = rgb(mix(T.ink, T.paper, 0.25 + p.f * 0.6)); ctx.lineWidth = Math.max(1, r * 0.13); ctx.stroke();
+        return;
+      }
+      const halo = ctx.createRadialGradient(p.x, p.y, r * 0.7, p.x, p.y, r * 1.75);
+      halo.addColorStop(0, rgb(col, 0.2 * (1 - p.f))); halo.addColorStop(1, rgb(col, 0));
+      ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(p.x, p.y, r * 1.75, 0, TAU); ctx.fill();
+      const g = ctx.createRadialGradient(p.x - r * 0.36, p.y - r * 0.4, r * 0.05, p.x, p.y, r * 1.02);
+      g.addColorStop(0, rgb(mix(col, T.paper, 0.46 + p.f * 0.3)));
+      g.addColorStop(0.55, rgb(mix(col, T.paper, 0.14 + p.f * 0.5)));
+      g.addColorStop(1, rgb(mix(col, T.paper, p.f * 0.55)));
+      ctx.fillStyle = g; path(r); ctx.fill();
+      if (el !== 'C' && r > 8) {
+        ctx.fillStyle = rgb(T.paper, 0.95 - p.f * 0.3); ctx.font = `600 ${Math.round(r * 1.02)}px "Noto Serif SC", serif`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(el, p.x, p.y + r * 0.04);
+      }
+    }
+  }
+
+  /* ---------- 曲面：层叠的山 ---------- */
+  /* u：横向（pH）；v：纵深，v = 1 在远处；高度 0–1。远处高、近处低，像一道道山脊叠上去。 */
+  class SurfView extends Stage {
+    constructor(canvas, o = {}) {
+      super(canvas, { yaw: -0.42, pitch: 0.4, lim: { yaw: [-1.15, 1.15], pitch: [0.12, 1.1] }, ...o });
+      this.nx = o.nx || 48; this.nz = o.nz || 32;
+      this.fn = o.fn; this.bands = 0; this.marks = []; this.probe = null; this.ridge = null;
+      this.xt = o.xt || []; this.zt = o.zt || []; this.xName = o.xName || ''; this.zName = o.zName || ''; this.yName = o.yName || '';
+    }
+    set(o) { Object.assign(this, o); this.dirty = true; }
+    P(u, v, hgt) { return this.proj([(u * 2 - 1) * 1.25, hgt * 1.2 - 0.62, (1 - v * 2) * 0.95], this._k, 6.4, this.w / 2, this.h * 0.47); }
+    draw() {
+      const { ctx, w, h, nx, nz } = this;
+      this._k = Math.min(w / 3.75, h / 2.72);
+      const H = (u, v) => clamp(this.fn(u, v), 0, 1.04);
+      const G = []; let h0 = Infinity, h1 = -Infinity;
+      for (let j = 0; j <= nz; j++) { const row = []; for (let i = 0; i <= nx; i++) { const u = i / nx, v = j / nz, hh = H(u, v); h0 = Math.min(h0, hh); h1 = Math.max(h1, hh); row.push({ h: hh, p: this.P(u, v, hh) }); } G.push(row); }
+      const base = [[0, 0], [1, 0], [1, 1], [0, 1]].map(([u, v]) => this.P(u, v, 0));
+      ctx.fillStyle = rgb(T.ink, T.dark ? 0.1 : 0.05); ctx.beginPath(); base.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y))); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = rgb(T.ink, 0.5); ctx.lineWidth = 1.2; ctx.stroke();
+      {   // 高度轴立在远处的角上，先画，让山挡住它
+        const cu = this.P(1, 0.5, 0).z > this.P(0, 0.5, 0).z ? 0 : 1, b = this.P(cu, 1, 0), t = this.P(cu, 1, 1.02);
+        ctx.strokeStyle = rgb(T.ink, 0.4); ctx.beginPath(); ctx.moveTo(b.x, b.y); ctx.lineTo(t.x, t.y); ctx.stroke();
+        this._top = t;
+      }
+      const quads = [];
+      for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
+        const a = G[j][i], b = G[j][i + 1], c = G[j + 1][i + 1], d = G[j + 1][i];
+        quads.push({ a, b, c, d, j, z: (a.p.z + b.p.z + c.p.z + d.p.z) / 4, h: (a.h + b.h + c.h + d.h) / 4 });
+      }
+      quads.sort((p, q) => p.z - q.z);
+      const lerp = (m, n, L) => { const t = (L - m.h) / (n.h - m.h); return [m.p.x + (n.p.x - m.p.x) * t, m.p.y + (n.p.y - m.p.y) * t]; };
+      for (const q of quads) {
+        const tone = 0.04 + Math.pow((q.h - h0) / (h1 - h0 || 1), 1.2) * 0.52;
+        const col = rgb(mix(T.paper, T.ink, tone));
+        ctx.fillStyle = col; ctx.strokeStyle = col; ctx.lineWidth = 0.9;
+        ctx.beginPath(); ctx.moveTo(q.a.p.x, q.a.p.y); ctx.lineTo(q.b.p.x, q.b.p.y); ctx.lineTo(q.c.p.x, q.c.p.y); ctx.lineTo(q.d.p.x, q.d.p.y); ctx.closePath(); ctx.fill(); ctx.stroke();
+        // 沿 pH 方向的山形线：每条是一个亚硝酸根浓度
+        const strong = (q.j + 1) % 4 === 0;
+        ctx.strokeStyle = rgb(T.ink, strong ? 0.5 + tone * 0.4 : 0.1 + tone * 0.25); ctx.lineWidth = strong ? 1.3 : 0.7;
+        ctx.beginPath(); ctx.moveTo(q.d.p.x, q.d.p.y); ctx.lineTo(q.c.p.x, q.c.p.y); ctx.stroke();
+        // 等高墨线：相邻两道差 10 倍
+        if (this.bands) {
+          const lo = Math.min(q.a.h, q.b.h, q.c.h, q.d.h), hi = Math.max(q.a.h, q.b.h, q.c.h, q.d.h);
+          for (let n = Math.ceil(lo * this.bands); n <= hi * this.bands; n++) {
+            const L = n / this.bands, pts = [];
+            for (const [m, k] of [[q.a, q.b], [q.b, q.c], [q.c, q.d], [q.d, q.a]]) if ((m.h - L) * (k.h - L) < 0) pts.push(lerp(m, k, L));
+            if (pts.length >= 2) { ctx.strokeStyle = rgb(T.paper, 0.55); ctx.lineWidth = 1.1; ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); ctx.lineTo(pts[1][0], pts[1][1]); ctx.stroke(); }
+          }
+        }
+      }
+      const line = (pts, col, wdt, dash) => { ctx.strokeStyle = col; ctx.lineWidth = wdt; ctx.setLineDash(dash || []); ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y))); ctx.stroke(); ctx.setLineDash([]); };
+      const along = (f) => [...Array(49)].map((_, i) => f(i / 48));
+      if (this.ridge != null) line(along((v) => this.P(this.ridge, v, H(this.ridge, v) + 0.006)), rgb(T.red, 0.95), 1.8, [5, 5]);
+      const text = (s, x, y, col, align = 'left', size = 13, bold = false) => {
+        ctx.font = `${bold ? 600 : 400} ${size}px "Noto Serif SC", "Songti SC", serif`; ctx.textAlign = align; ctx.textBaseline = 'middle';
+        ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.strokeStyle = rgb(T.paper, 0.92); ctx.strokeText(s, x, y); ctx.fillStyle = col; ctx.fillText(s, x, y);
+      };
+      this._axes(text);
+      const dot = (p, col, r) => { ctx.fillStyle = rgb(T.paper); ctx.beginPath(); ctx.arc(p.x, p.y, r + 2, 0, TAU); ctx.fill(); ctx.fillStyle = col; ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, TAU); ctx.fill(); };
+      if (this.probe) {
+        const [pu, pv] = this.probe, col = rgb(T.blue);
+        line(along((u) => this.P(u, pv, H(u, pv) + 0.006)), col, 1.7);
+        line(along((v) => this.P(pu, v, H(pu, v) + 0.006)), col, 1.7);
+        dot(this.P(pu, pv, H(pu, pv)), col, 5);
+      }
+      for (const m of this.marks) {
+        const top = this.P(m.u, m.v, H(m.u, m.v)), tip = this.P(m.u, m.v, H(m.u, m.v) + (m.lift ?? 0.2)), col = rgb(T[m.color || 'red']);
+        line([top, tip], col, 1.3); dot(top, col, 4.5);
+        text(m.label, tip.x + (m.align === 'right' ? -6 : 6), tip.y - 3, col, m.align || 'left', 13, true);
+      }
+    }
+    _axes(text) {
+      const { ctx } = this, soft = rgb(T.soft), pale = rgb(T.pale);
+      // 刻度放在离观察者近的两条边上
+      const nearV = this.P(0.5, 1, 0).z > this.P(0.5, 0, 0).z ? 1 : 0, nearU = this.P(1, 0.5, 0).z > this.P(0, 0.5, 0).z ? 1 : 0;
+      const out = (p, q, d) => { const dx = p.x - q.x, dy = p.y - q.y, L = Math.hypot(dx, dy) || 1; return [p.x + dx / L * d, p.y + dy / L * d]; };
+      ctx.strokeStyle = soft; ctx.lineWidth = 1;
+      for (const [u, s] of this.xt) {
+        const p = this.P(u, nearV, 0), q = this.P(u, nearV ? 0.9 : 0.1, 0), [x1, y1] = out(p, q, 6), [x2, y2] = out(p, q, 18);
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(x1, y1); ctx.stroke(); text(s, x2, y2, soft, 'center', 12.5);
+      }
+      { const p = this.P(0.5, nearV, 0), q = this.P(0.5, nearV ? 0.9 : 0.1, 0), [x, y] = out(p, q, 40); text(this.xName, x, y, pale, 'center', 12.5); }
+      for (const [v, s] of this.zt) {
+        const p = this.P(nearU, v, 0), q = this.P(nearU ? 0.9 : 0.1, v, 0), [x1, y1] = out(p, q, 6), [x2, y2] = out(p, q, 12);
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(x1, y1); ctx.stroke(); text(s, x2, y2, soft, nearU ? 'left' : 'right', 12.5);
+      }
+      { const p = this.P(nearU, 0.5, 0), q = this.P(nearU ? 0.9 : 0.1, 0.5, 0), [x, y] = out(p, q, 50); text(this.zName, x, y + 16, pale, nearU ? 'left' : 'right', 12.5); }
+      text(this.yName, this._top.x, this._top.y - 12, pale, 'center', 12.5);
+    }
+  }
+
+  let last = performance.now();
+  function loop(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    for (const s of stages) if (s.visible) s.step(dt);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  return { MolView, SurfView, reduce, theme: () => T };
+})();
+</script>
+<script data-inline="page.js">
+/* 页面交互：工艺长卷、反应地图与三维演示、速率曲面、图表、断案与对策。依赖 GEOM、Ink3D。 */
+(() => {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const reduce = Ink3D.reduce;
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+  /* 把 Unicode 上下标换成 <sub>/<sup>，排版更稳 */
+  const SUBS = '₀₁₂₃₄₅₆₇₈₉₊₋', SUPS = '⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻', PLAIN = '0123456789+−';
+  const RE = /[₀-₋]+|[⁰¹²³⁴-⁻]+/g;
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  function chemify(root) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const todo = [];
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      if (n.parentNode.closest('script,style,sub,sup,title,[data-chem]')) continue;
+      RE.lastIndex = 0;
+      if (RE.test(n.nodeValue)) todo.push(n);
+    }
+    for (const n of todo) {
+      const inSvg = !!n.parentNode.closest('svg'), src = n.nodeValue, frag = document.createDocumentFragment();
+      let last = 0, back = 0;                         // back：SVG 里上下标之后要退回基线的位移（em）
+      const tspan = (txt, dy, small) => { const t = document.createElementNS(SVGNS, 'tspan'); t.setAttribute('data-chem', ''); t.setAttribute('dy', dy + 'em'); if (small) t.setAttribute('font-size', '72%'); t.textContent = txt; frag.append(t); };
+      const plain = (txt) => { if (!txt) return; if (back) { tspan(txt, back, false); back = 0; } else frag.append(txt); };
+      src.replace(RE, (m, at) => {
+        plain(src.slice(last, at));
+        const sub = SUBS.includes(m[0]), txt = [...m].map((c) => PLAIN[(sub ? SUBS : SUPS).indexOf(c)]).join('');
+        if (inSvg) { tspan(txt, (sub ? 0.28 : -0.5) + back / 0.72, true); back = sub ? -0.2 : 0.36; }
+        else { const e = document.createElement(sub ? 'sub' : 'sup'); e.textContent = txt; frag.append(e); }
+        last = at + m.length; return m;
+      });
+      plain(src.slice(last) || (back ? '​' : ''));
+      n.replaceWith(frag);
+    }
+  }
+  const setHTML = (el, html) => { el.innerHTML = html; chemify(el); };
+  const supNum = (n) => String(n).replace(/-/g, '⁻').replace(/\d/g, (d) => SUPS[d]);
+  function num(x, d = 2) {
+    if (!isFinite(x)) return '–';
+    if (x === 0) return '0';
+    const a = Math.abs(x);
+    if (a >= 0.001 && a < 100000) return String(+x.toPrecision(d));
+    const e = Math.floor(Math.log10(a));
+    return `${(x / 10 ** e).toFixed(1)}×10${supNum(e)}`;
+  }
+  const times = (x) => (x >= 100 ? Math.round(x / 10) * 10 : x >= 10 ? Math.round(x) : +x.toFixed(1));
+
+  /* 悬停提示 */
+  function makeTip(plot) { const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; plot.appendChild(tip); return tip; }
+  function tips(plot) {
+    const tip = makeTip(plot);
+    const show = (e) => {
+      const t = e.target.closest('[data-tip]');
+      if (!t) { tip.hidden = true; return; }
+      setHTML(tip, t.dataset.tip); tip.hidden = false;
+      const r = plot.getBoundingClientRect();
+      const x = clamp(e.clientX - r.left + 14, 0, r.width - tip.offsetWidth - 4), y = e.clientY - r.top - tip.offsetHeight - 10;
+      tip.style.left = x + 'px'; tip.style.top = Math.max(0, y) + 'px';
+    };
+    plot.addEventListener('pointermove', show);
+    plot.addEventListener('pointerleave', () => { tip.hidden = true; });
+    plot.addEventListener('focusin', (e) => { const t = e.target.closest('[data-tip]'); if (t) { setHTML(tip, t.dataset.tip); tip.hidden = false; tip.style.left = '8px'; tip.style.top = '4px'; } });
+    plot.addEventListener('focusout', () => { tip.hidden = true; });
+    return tip;
+  }
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+  /* 对数标尺条：限度线在上，数据点在下 */
+  function logStrip(el, { min, max, lines = [], points = [], bands = [], unit = 'ppm', name = '' }) {
+    const [, , W, H] = el.getAttribute('viewBox').split(' ').map(Number);
+    const L = 30, R = 30, ay = H - 62, a = Math.log10(min), b = Math.log10(max);
+    const x = (v) => L + (Math.log10(clamp(v, min, max)) - a) / (b - a) * (W - L - R);
+    let s = '';
+    for (const bd of bands) s += `<rect class="band ${bd.cls || ''}" x="${x(bd.a)}" y="${ay - 26}" width="${x(bd.b) - x(bd.a)}" height="26"/><text x="${(x(bd.a) + x(bd.b)) / 2}" y="${ay - 32 - (bd.row || 0) * 17}" text-anchor="middle">${bd.label}</text>`;
+    for (let e = Math.ceil(a); e <= Math.floor(b); e++) {
+      const v = 10 ** e;
+      s += `<line class="tick" x1="${x(v)}" x2="${x(v)}" y1="${ay}" y2="${ay + 6}"/><text x="${x(v)}" y="${ay + 21}" text-anchor="middle">${+v.toPrecision(1)}</text>`;
+    }
+    s += `<line class="axis" x1="${L}" x2="${W - R}" y1="${ay}" y2="${ay}"/><text class="axis-name" x="${L}" y="14">${name ? name + ' · ' : ''}${unit}，对数刻度</text>`;
+    for (const ln of lines) {
+      const top = ay - 40 - (ln.row || 0) * 17;
+      s += `<line class="${ln.cls || 'lim'}" x1="${x(ln.v)}" x2="${x(ln.v)}" y1="${top + 5}" y2="${ay}"/><text class="lab ${ln.hot ? 'hot' : ''} halo-t" x="${x(ln.v)}" y="${top}" text-anchor="${ln.anchor || 'middle'}">${ln.label}</text>`;
+    }
+    for (const p of points) {
+      const yy = ay + 40 + (p.row || 0) * 17;
+      s += `<line class="tick" x1="${x(p.v)}" x2="${x(p.v)}" y1="${ay + 8}" y2="${yy - 13}"/><circle class="pt ${p.cls || 'now'}" cx="${x(p.v)}" cy="${ay}" r="6.5"/><text class="lab ${p.hot ? 'hot' : ''} halo-t" x="${x(p.v)}" y="${yy}" text-anchor="${p.anchor || 'middle'}">${p.label}</text>`;
+    }
+    el.innerHTML = s;
+  }
+
+  /* ---------- 顶栏高亮 ---------- */
+  {
+    const links = $$('.tabs a.t'), map = new Map(links.map((a) => [a.getAttribute('href').slice(1), a]));
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => { if (e.isIntersecting) { links.forEach((a) => a.classList.remove('on')); map.get(e.target.id)?.classList.add('on'); } });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    map.forEach((_, id) => { const s = document.getElementById(id); s && io.observe(s); });
+  }
+
+  /* ================= 贰 工艺长卷 ================= */
+  const STATIONS = {
+    charge: {
+      n: '一', name: '投料', en: 'CHARGE',
+      what: '腈中间体、叠氮化钠和溶剂 DMF 进釜。现行工艺用外包回收的 DMF（Lot R-21），历史工艺用原生 DMF。',
+      chem: '进料 DMF 自带的二甲胺（DMA）从这里进入体系。它是仲胺，是 NDMA 的前体。',
+      ev: '<span class="tag fact">案例</span> DMA：原生 DMF 低于 1.0 mg/L，R-21 为 11.8 mg/L。含量 99.80% → 99.70%，都符合 ≥ 99.5%。',
+      samp: '<span class="tag fact">摘要</span> 比较原生与回收 DMF 中的 NDMA 和 DMA。<span class="tag mine">补充</span> 顺带测亚硝酸根、甲酸、水分和其他仲胺（如二乙胺）。',
+      ctrl: '回收 DMF 的质量标准加上 DMA 和 NDMA 两项，每批检验合格才放行。',
+    },
+    ring: {
+      n: '二', name: '四唑成环', en: 'TETRAZOLE FORMATION',
+      what: '加热下，叠氮根与腈基发生 [3+2] 环加成，长出四唑环。四唑是沙坦类药物的关键基团，酸性与羧酸相当。',
+      chem: 'Ar–C≡N + N₃⁻ → Ar–CN₄⁻，酸化后得 1H-四唑。叠氮化钠通常过量，反应完釜里还剩 N₃⁻。',
+      ev: '<span class="tag infer">推断</span> 高温下 DMF 自己也会缓慢分解出 DMA，釜内的 DMA 可能比进料时更多。案例没有给这一步的数据。',
+      samp: '<span class="tag mine">补充</span> 成环结束、淬灭之前取样，测 DMA 和 NDMA。要分清「随溶剂带入」和「淬灭时生成」，这一个点最管用。',
+      ctrl: '给温度和时间设上限；评估能否换成不会放出仲胺的溶剂。',
+    },
+    quench: {
+      n: '三', name: '亚硝酸钠淬灭', en: 'NITRITE QUENCH',
+      what: '酸性条件下加入亚硝酸钠，把残余的叠氮根变成氮气和一氧化二氮，免得后面放出剧毒、易爆的叠氮酸。',
+      chem: 'NO₂⁻ + H⁺ ⇌ HNO₂，再生成 N₂O₃、NO⁺ 等亚硝化物种。它们的本职是打 N₃⁻，但同一釜里的 DMA 也会被打中：(CH₃)₂NH + N₂O₃ → (CH₃)₂N–NO + HNO₂。',
+      ev: '<span class="tag fact">案例</span> 淬灭 pH：历史 2.9，现行 2.8，都在亚硝化的高速区。<span class="tag infer">推断</span> 亚硝酸钠要过量才淬灭得干净，过量的那部分就是多出来的亚硝化试剂。',
+      samp: '<span class="tag fact">摘要</span> 淬灭前后各测一次 NDMA。<span class="tag mine">补充</span> 同时记录亚硝酸钠投料量、加料时间、温度和停留时间。',
+      ctrl: '最好让含产品的物料不见亚硝酸：先分相，在水相废液里淬灭。做不到就压低过量、降温、缩短停留，淬灭后加氨基磺酸清掉余量。',
+    },
+    wash: {
+      n: '四', name: '水洗', en: 'AQUEOUS WASHES',
+      what: '用水把无机盐、亚硝酸根和其他水溶性杂质洗走。放大生产时，从三次减成了两次。',
+      chem: '这一步没有新反应，只有分配和稀释。NDMA 与水互溶（log P ≈ −0.57），水洗同样带得走它。',
+      ev: '<span class="tag fact">案例</span> 末次水洗后的亚硝酸根：三洗 0.4 mg/L，两洗 3.2 mg/L，正好差 8 倍。<span class="tag infer">推断</span> 一次水洗约把亚硝酸根降到八分之一。NDMA 的清除倍数未知。',
+      samp: '<span class="tag fact">摘要</span> 每次水洗后测 NDMA。<span class="tag mine">补充</span> 同步测亚硝酸根和 DMA，算出每一洗的清除倍数。',
+      ctrl: '恢复第三次水洗。设中控：末次水洗液亚硝酸根 ≤ 0.5 mg/L 才往下走。',
+    },
+    cryst: {
+      n: '五', name: '结晶', en: 'CRYSTALLIZATION',
+      what: 'API 从溶液里析出晶体，杂质大多留在母液里。',
+      chem: '结晶本身是一次纯化。但母液里若还有亚硝酸根和胺，浓缩、降温时它们仍可能相遇。',
+      ev: '案例没有给这一步的数据。',
+      samp: '<span class="tag mine">补充</span> 测母液中的 NDMA，做一笔物料衡算：生成了多少，母液带走多少，晶体里留下多少。',
+      ctrl: '母液不套用，或者套用前先检测。',
+    },
+    dry: {
+      n: '六', name: '过滤 · 干燥', en: 'FILTRATION AND DRYING',
+      what: '滤出晶体，洗涤滤饼，再加热除去残留溶剂。',
+      chem: '湿滤饼里残留的亚硝酸根和 DMA（或者还能放出 DMA 的残留 DMF），在受热、浓缩时仍可能继续反应。亚硝胺在固态中缓慢增长，制剂里有文献先例。',
+      ev: '<span class="tag todo">待检验</span> 没有数据说明 NDMA 在干燥或贮存期间是否增长。',
+      samp: '<span class="tag mine">补充</span> 湿滤饼和干燥成品各测一次；留样隔一段时间复测。',
+      ctrl: '滤饼洗涤充分；干燥温度设上限；成品检测残留 DMF 和亚硝酸根。',
+    },
+    qc: {
+      n: '七', name: '成品 · 检验', en: 'RELEASE TESTING',
+      what: '成品按质量标准检验后放行。常规有关物质用 UHPLC-UV。',
+      chem: 'NDMA 分子小、紫外吸收弱，又只有亚 ppm 的量，UV 检测器定量不了它。',
+      ev: '<span class="tag fact">案例</span> UHPLC-UV 定量限约 0.05%（500 ppm），两种工艺都是「无可报告的未知杂质」。痕量筛查在约 0.52 ppm 处有信号，身份未定。',
+      samp: '<span class="tag fact">摘要</span> 用经验证的 LC-MS/MS、对照品和同位素内标检测留样，定量限 ≤ 0.40 ppm。<span class="tag mine">补充</span> 历史工艺的留样一并检测，建立基线。',
+      ctrl: 'NDMA 每批用 LC-MS/MS 检验，限度 0.40 ppm。连续多批远低于限度之后，再考虑减少频次。',
+    },
+    recov: {
+      n: '八', name: '外包回收', en: 'SOLVENT RECOVERY',
+      what: '用过的 DMF 送到外部回收商，主要靠蒸馏提纯，约 80% 回收后返回，要求含量 ≥ 99.5%。回收商用共用的储罐和设备处理多家客户的溶剂。',
+      chem: '蒸馏温度接近 DMF 的沸点（153 °C），DMF 会少量分解：HCON(CH₃)₂ → CO + (CH₃)₂NH。NDMA 的沸点约 152 °C，一旦混入，蒸馏分不开。DMA 沸点只有 7 °C，按理很容易赶走；回收品里还有 11.8 mg/L，说明它要么以盐的形式留了下来，要么在蒸馏和贮存中不断新生成。',
+      ev: '<span class="tag fact">案例</span> 审计发现，回收商无法完整追溯各批回收溶剂用过哪些储罐。<span class="tag infer">推断</span> 交叉污染无法排除：可能带入 DMA、别的胺，甚至现成的亚硝胺。',
+      samp: '<span class="tag fact">摘要</span> 调取回收商的批次与设备记录。<span class="tag mine">补充</span> 检测 R-21 和其他回收批次的 NDMA、NDEA、DMA、二乙胺。',
+      ctrl: '专用设备，或清洁后经过验证；批次谱系可追溯；质量协议加定期审计。',
+    },
+  };
+
+  (function buildFlow() {
+    const S = $('#flow-svg'), Y = 215, panel = $('#flow-panel');
+    const body = 'M-40,-52 Q-40,-64 -28,-64 L28,-64 Q40,-64 40,-52 L40,22 Q40,56 0,56 Q-40,56 -40,22 Z';
+    const liquid = 'M-38,-8 Q-28,-16 -19,-8 T0,-8 T19,-8 T38,-8 L38,22 Q38,54 0,54 Q-38,54 -38,22 Z';
+    const stir = '<path class="det" d="M0,-84 L0,26 M-20,26 Q0,36 20,26"/><path class="ves" d="M-9,-96 h18 v12 h-18 Z"/><path class="det" d="M-30,50 L-36,68 M30,50 L36,68"/>';
+    const heat = '<path class="det" d="M-22,84 q5,-6 0,-12 q-5,-6 0,-12 M0,84 q5,-6 0,-12 q-5,-6 0,-12 M22,84 q5,-6 0,-12 q-5,-6 0,-12"/>';
+    const ICON = {
+      charge: '<path class="ves" d="M-42,-50 L42,-50 L14,8 L14,44 L-14,44 L-14,8 Z"/><path class="det" d="M-30,-34 Q0,-44 30,-34"/>',
+      ring: `<path class="ves" d="${body}"/><path class="liq" d="${liquid}"/>${stir}`,
+      quench: `<path class="ves" d="${body}"/><path class="liq" d="${liquid}"/>${stir}`,
+      wash: '<path class="ves" d="M-40,-58 L40,-58 L40,0 L8,48 L8,62 L-8,62 L-8,48 L-40,0 Z"/><path class="liq" d="M-39,-16 L39,-16 L39,0 L8,48 L-8,48 L-39,0 Z"/><path class="det" d="M-39,-16 L39,-16 M-39,-38 q10,-6 20,0 t20,0 t20,0 t19,0"/><circle class="det" cx="0" cy="70" r="5"/>',
+      cryst: `<path class="ves" d="${body}"/><path class="liq" d="${liquid}"/><path class="det" d="M-16,14 l7,-9 l7,9 l-7,9 Z M6,26 l6,-8 l6,8 l-6,8 Z M-2,36 l5,-7 l5,7 l-5,7 Z M12,4 l5,-6 l5,6 l-5,6 Z"/>`,
+      dry: '<path class="ves" d="M-44,-52 L44,-52 L12,-6 L-12,-6 Z"/><path class="det" d="M-30,-32 L30,-32 M-27,-34 Q0,-48 27,-34"/><path class="ves" d="M-36,10 h72 v44 h-72 Z"/><path class="det" d="M-22,44 q5,-6 0,-12 q-5,-6 0,-12 M0,44 q5,-6 0,-12 q-5,-6 0,-12 M22,44 q5,-6 0,-12 q-5,-6 0,-12 M0,-6 L0,10"/>',
+      qc: '<circle class="ves" cx="0" cy="-4" r="46"/><path class="det" d="M-24,10 a12,12 0 0 1 24,0 a12,12 0 0 1 24,0 M-24,10 h48"/>',
+      recov: '<path class="ves" d="M-18,-60 L18,-60 L18,62 L-18,62 Z"/><path class="det" d="M-18,-36 h36 M-18,-12 h36 M-18,12 h36 M-18,36 h36 M18,-52 Q44,-60 44,-36 Q44,-18 28,-22"/>',
+    };
+    const tank = (x, y) => `<g transform="translate(${x},${y})"><path class="ves" d="M-24,-26 Q0,-36 24,-26 L24,26 Q0,36 -24,26 Z"/><path class="det" d="M-24,-26 Q0,-16 24,-26"/></g>`;
+    const POS = { charge: [110, Y], ring: [290, Y], quench: [480, Y], wash: [690, Y], cryst: [880, Y], dry: [1060, Y], qc: [1250, Y], recov: [585, 487] };
+    const SUBS0 = { ring: 'DMF，加热', cryst: '母液带走大半杂质', dry: '', recov: '' };
+    const chev = (x, y, a) => `<path class="det" transform="translate(${x},${y}) rotate(${a})" d="M-7,-6 L0,0 L-7,6"/>`;
+
+    let h = `<defs>
+      <filter id="rough" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+      <filter id="bleed" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+    </defs>
+    <g filter="url(#bleed)"><ellipse class="mist" cx="480" cy="${Y}" rx="120" ry="92"/><ellipse class="mist" cx="700" cy="500" rx="250" ry="70"/><ellipse class="mist" cx="1250" cy="${Y}" rx="90" ry="70"/></g>
+    <g filter="url(#rough)">
+      <path class="pipe" d="M150,${Y} L1205,${Y}"/>
+      <path class="pipe thin" d="M480,96 L480,150 M690,96 L690,156 M690,288 L690,300 L790,300 L790,346"/>
+      <path class="pipe thin" d="M508,152 q9,-22 -2,-44 q-9,-22 5,-44"/>
+      <g id="loop"><path class="pipe loop" d="M585,${Y} L585,424"/><path class="pipe loop" d="M585,550 L585,572 L36,572 L36,120 L110,120 L110,160"/><path class="pipe thin" d="M606,487 L672,487 M748,487 L772,487 M848,487 L872,487"/></g>
+      <path class="pipe thin" id="virgin-pipe" d="M194,415 L36,415"/>
+      ${chev(1205, Y, 0)}${chev(790, 346, 90)}${chev(585, 330, 90)}${chev(340, 572, 180)}${chev(36, 330, -90)}${chev(110, 160, 90)}${chev(480, 150, 90)}${chev(690, 156, 90)}
+      <g id="tanks">${tank(710, 487)}${tank(810, 487)}${tank(910, 487)}</g>
+      <g id="barrel" transform="translate(222,415)"><path class="ves" d="M-20,-28 L20,-28 Q27,0 20,28 L-20,28 Q-27,0 -20,-28 Z"/><path class="det" d="M-23,-10 h46 M-23,10 h46"/></g>
+      <g transform="translate(480,74)"><path class="ves" d="M-8,-24 L8,-24 L8,-10 L19,16 L-19,16 L-8,-10 Z"/></g>
+      <g id="drops" transform="translate(690,70)">${[-24, 0, 24].map((dx, i) => `<path class="ves" data-drop="${i}" transform="translate(${dx},0)" d="M0,-16 q-11,16 0,24 q11,-8 0,-24 Z"/>`).join('')}</g>
+    </g>`;
+    for (const [id, [x, y]] of Object.entries(POS)) {
+      const st = STATIONS[id], recov = id === 'recov';
+      h += `<g class="st" data-st="${id}" tabindex="0" role="button" aria-label="${st.name}">
+        <circle class="halo" cx="${x}" cy="${y}" r="78"/>
+        <g transform="translate(${x},${y})" filter="url(#rough)">${ICON[id]}${id === 'ring' ? heat : ''}</g>
+        <text class="no" x="${recov ? x - 34 : x - 58}" y="${recov ? y - 52 : y - 62}">${st.n}</text>
+        <text class="lbl" x="${recov ? x - 34 : x}" y="${recov ? y + 4 : y + 104}" ${recov ? 'style="text-anchor:end"' : ''}>${st.name}</text>
+        <text class="sub" id="sub-${id}" x="${recov ? x - 34 : x}" y="${recov ? y + 24 : y + 124}" ${recov ? 'style="text-anchor:end"' : ''}>${recov ? '蒸馏 · 共用设备' : (SUBS0[id] || '')}</text>
+      </g>`;
+    }
+    h += `<g id="parts"></g>
+      <text class="ann" x="480" y="36" text-anchor="middle">NaNO₂ + 酸</text>
+      <text class="ann" id="t-wash" x="690" y="36" text-anchor="middle"></text>
+      <text class="ann" x="528" y="96">N₂↑ N₂O↑</text>
+      <text class="ann" x="790" y="368" text-anchor="middle">水相废液</text>
+      <text class="ann" x="597" y="322">用过的 DMF</text>
+      <text class="ann" id="t-loop" x="130" y="596"></text>
+      <text class="ann" x="810" y="546" text-anchor="middle">共用储罐：还装着别家客户的溶剂</text>
+      <text class="ann" id="t-virgin" x="222" y="466" text-anchor="middle"></text>
+      <text class="ann" x="1250" y="343" text-anchor="middle">UHPLC-UV：无可报告的未知杂质</text>
+      <text class="ann" id="t-screen" x="1250" y="365" text-anchor="middle"></text>
+      <g id="flags">${[[200, Y, '进料 DMF'], [385, Y, '淬灭前'], [540, Y, '淬灭后'], [785, Y, '每洗之后'], [970, Y, '母液 · 湿滤饼'], [1150, Y, '成品 · 历史留样'], [430, 572, 'R-21 等回收批']]
+        .map(([x, y, t]) => `<g class="flag"><line x1="${x}" y1="${y}" x2="${x}" y2="${y - 30}"/><path d="M${x},${y - 30} l15,5 l-15,6 Z"/><text x="${x + 2}" y="${y - 37}" text-anchor="middle" class="halo-t" style="paint-order:stroke;stroke:var(--paper);stroke-width:4px">${t}</text></g>`).join('')}</g>`;
+    S.innerHTML = h;
+
+    /* 粒子 */
+    const R = {
+      dmaNow: [[585, 550], [585, 572], [36, 572], [36, 120], [110, 120], [110, Y], [480, Y], [690, Y], [690, 300], [790, 300], [790, 346]],
+      dmaOld: [[194, 415], [36, 415], [36, 120], [110, 120], [110, Y], [480, Y], [690, Y], [690, 300], [790, 300], [790, 346]],
+      no2Out: [[480, 100], [480, Y], [690, Y], [690, 300], [790, 300], [790, 346]],
+      no2Stay: [[480, 100], [480, Y], [1205, Y]],
+      ndmaOut: [[480, Y], [690, Y], [690, 300], [790, 300], [790, 346]],
+      ndmaStay: [[480, Y], [1205, Y]],
+      gas: [[506, 172], [515, 132], [504, 100], [516, 60]],
+      spent: [[585, Y], [585, 424]],
+    };
+    const PLAN = {
+      now: [['dma', 'dmaNow', 12, 4.2], ['no2', 'no2Out', 7, 4.2], ['no2', 'no2Stay', 2, 4.2], ['ndma', 'ndmaOut', 3, 5.4], ['ndma', 'ndmaStay', 3, 5.4], ['gas', 'gas', 5, 4], ['dmf', 'spent', 4, 3.2]],
+      old: [['dma', 'dmaOld', 1, 4.2], ['no2', 'no2Out', 8, 4.2], ['ndma', 'ndmaOut', 1, 5.4], ['gas', 'gas', 5, 4]],
+    };
+    const NS = 'http://www.w3.org/2000/svg', parts = $('#parts', S);
+    let P = [], mode = 'now', clock = 0, visible = false;
+    function spawn() {
+      parts.innerHTML = ''; P = [];
+      PLAN[mode].forEach(([cls, route, n, r], gi) => {
+        const pts = R[route], cum = [0];
+        for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+        for (let i = 0; i < n; i++) {
+          const el = document.createElementNS(NS, 'circle'); el.setAttribute('class', 'dot-' + cls); el.setAttribute('r', r); parts.appendChild(el);
+          P.push({ el, pts, cum, L: cum[cum.length - 1], phase: (i + 0.37 * gi) / n, seed: i * 2.4 + gi, r, born: cls === 'ndma' });
+        }
+      });
+      draw();
+    }
+    function draw() {
+      for (const p of P) {
+        const gap = 90, s = (clock * 62 + p.phase * (p.L + gap)) % (p.L + gap);
+        if (s > p.L) { p.el.setAttribute('opacity', 0); continue; }
+        let k = 1; while (k < p.cum.length - 1 && p.cum[k] < s) k++;
+        const u = (s - p.cum[k - 1]) / (p.cum[k] - p.cum[k - 1] || 1), a = p.pts[k - 1], b = p.pts[k];
+        const dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1, wob = Math.sin(s * 0.045 + p.seed) * 5;
+        p.el.setAttribute('cx', a[0] + dx * u - dy / len * wob); p.el.setAttribute('cy', a[1] + dy * u + dx / len * wob);
+        p.el.setAttribute('opacity', Math.min(1, s / 28, (p.L - s) / 28) * 0.92);
+        if (p.born) p.el.setAttribute('r', p.r * Math.min(1, 0.3 + s / 60));
+      }
+    }
+    let last = performance.now();
+    (function loop(now) { const dt = Math.min(0.05, (now - last) / 1000); last = now; if (visible && !reduce) { clock += dt; draw(); } requestAnimationFrame(loop); })(last);
+    new IntersectionObserver((es) => { visible = es[0].isIntersecting; }).observe(S);
+    if (reduce) clock = 5.3;
+
+    function setMode(m) {
+      mode = m; const now = m === 'now';
+      $$('[data-mode]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+      $('#loop', S).classList.toggle('dim', !now); $('#tanks', S).classList.toggle('dim', !now); $('[data-st="recov"]', S).classList.toggle('dim', !now);
+      $('#barrel', S).classList.toggle('dim', now); $('#virgin-pipe', S).classList.toggle('dim', now);
+      $('[data-drop="2"]', S).classList.toggle('dim', now);
+      const set = (id, t, hot) => { const e = $('#' + id, S); e.textContent = t; e.classList.toggle('hot', !!hot); chemify(e); };
+      set('t-wash', now ? '水洗 ×2（原为 ×3）' : '水洗 ×3', now);
+      set('t-loop', now ? '回收 DMF · Lot R-21 · 含量 99.70% · 回收约 80%' : '历史工艺：不走这条回路');
+      set('t-virgin', now ? '原生 DMF（补足）' : '原生 DMF · 含量 99.80%');
+      set('t-screen', now ? '痕量筛查：约 0.52 ppm 处有信号' : '痕量筛查：没做过', now);
+      set('sub-charge', now ? 'DMA 11.8 mg/L' : 'DMA < 1.0 mg/L', now);
+      set('sub-quench', now ? 'pH 2.8' : 'pH 2.9');
+      set('sub-wash', now ? '末洗后 NO₂⁻ 3.2 mg/L' : '末洗后 NO₂⁻ 0.4 mg/L', now);
+      spawn();
+    }
+    $$('[data-mode]').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
+    const ft = $('#flag-toggle');
+    ft.addEventListener('click', () => { const on = ft.getAttribute('aria-pressed') !== 'true'; ft.setAttribute('aria-pressed', String(on)); $('#flags', S).style.display = on ? '' : 'none'; });
+
+    function pick(id) {
+      const st = STATIONS[id];
+      $$('.st', S).forEach((g) => g.classList.toggle('on', g.dataset.st === id));
+      setHTML(panel, `<div><span class="p-no">${st.n}</span><div class="p-title">${st.name}</div><div class="p-sub">${st.en}</div></div>
+        <div><h4>发生了什么</h4><p>${st.what}</p><h4>化学</h4><p>${st.chem}</p></div>
+        <div><h4>证据</h4><p>${st.ev}</p><h4>在这里取样</h4><p>${st.samp}</p></div>
+        <div><h4>对策</h4><p>${st.ctrl}</p></div>`);
+    }
+    $$('.st', S).forEach((g) => {
+      g.addEventListener('click', () => pick(g.dataset.st));
+      g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(g.dataset.st); } });
+    });
+    setMode('now'); pick('quench');
+  })();
+
+  /* ================= 叁 反应 ================= */
+  const RX = {
+    tetrazole: {
+      short: '成环', title: '成环：腈 + 叠氮 → 四唑', view: { yaw: 0, pitch: 0.5, motion: 'sway', zoom: 1.45 },
+      eq: 'Ar–C≡N + N₃⁻ → Ar–CN₄⁻ →(H⁺) Ar–CN₄H',
+      note: 'Ar 在这里用苯基代替，真实分子里是联苯骨架。整个过程发生在同一个平面内。',
+      caps: ['叠氮根 N₃⁻ 是一根直线，朝腈基的碳靠过去。', '末端的氮进攻腈基碳，C≡N 弯了下来，成为开链的亚氨基叠氮。', '另一端的氮回头咬住腈基的氮，五元环合上：一个碳，四个氮。', '酸化，质子落在 N1 上，得到 1H-四唑。'],
+    },
+    protonation: {
+      short: '质子化', title: '亚硝酸根的质子化阶梯', view: { yaw: 0, pitch: 0.45, motion: 'sway', zoom: 1.5 },
+      eq: 'NO₂⁻ →(H⁺) HNO₂ →(H⁺) H₂O + NO⁺',
+      note: '溶液里 NO⁺ 很少单独存在，更多以 N₂O₃ 这样的载体出现：2 HNO₂ ⇌ N₂O₃ + H₂O。',
+      caps: ['亚硝酸根接上一个质子，成为亚硝酸 HO–N=O。pH 2.8 时大半已是这个形态。', '同一个氧再接一个质子，羟基变成了水，一个现成的离去基团。', '水离开，剩下亚硝鎓离子 NO⁺，氮氧之间是三键。'],
+    },
+    quench: {
+      short: '淬灭', title: '淬灭的本职：销毁叠氮', view: { yaw: 0, pitch: 0.45, motion: 'sway', zoom: 1.55 },
+      eq: 'HN₃ + HNO₂ → N₂↑ + N₂O↑ + H₂O',
+      note: '图中用 N₃⁻ + NO⁺ 表示实际反应的两方，质子和水省去了。',
+      caps: ['NO⁺ 朝叠氮根末端的氮靠近。', 'N–N 成键，得到亚硝酰叠氮 N₃–N=O，一个很不稳定的中间体。', '中间那根 N–N 键断开。', '一头成了氮气，另一头成了一氧化二氮，都以气体离开。叠氮销毁完毕。'],
+    },
+    hydrolysis: {
+      short: '水解', title: '溶剂的裂口：DMF → 二甲胺', view: { yaw: 0.5, pitch: -1.05, motion: 'sway', zoom: 1.6 },
+      eq: 'HCON(CH₃)₂ + H₂O → HCOOH + (CH₃)₂NH',
+      note: '受热时还有另一条路：HCON(CH₃)₂ → CO + (CH₃)₂NH。两条路放出的都是二甲胺。',
+      caps: ['水分子从酰胺平面的上方靠近羰基碳。', '水的氧接上碳，C–N 键断开，一个氢转给了氮。酸、碱、加热都会加快这一步。', '分成两块：甲酸，和二甲胺 (CH₃)₂NH。'],
+    },
+    nitrosation: {
+      short: '亚硝化', title: '祸根：二甲胺被亚硝化成 NDMA', view: { yaw: -0.5, pitch: 0.25, motion: 'sway', zoom: 1.7 },
+      eq: '(CH₃)₂NH + N₂O₃ → (CH₃)₂N–N=O + HNO₂',
+      note: '速率 = k [(CH₃)₂NH] [HNO₂]²。平方来自 N₂O₃：它要两分子亚硝酸才凑得成。',
+      caps: ['N₂O₃ 靠近二甲胺。只有没被质子化的胺才有孤对电子可用，pH 2.8 时大约只占一亿分之一。', '胺氮的孤对电子进攻亚硝基的氮。N₂O₃ 中间那根又长又弱的 N–N 键同时拉开。', '新的 N–N 键成形，亚硝酸根离去，氮上还挂着一个质子。', '质子交给亚硝酸根，变回 HNO₂。留下的 (CH₃)₂N–N=O 就是 NDMA。'],
+    },
+  };
+  (function buildChem() {
+    const M = $('#rx-map');
+    const pill = (id, n, x, y) => `<g class="rx" data-rx="${id}" tabindex="0" role="button" aria-label="演示：${RX[id].title}"><rect x="${x - 48}" y="${y - 15}" width="96" height="30"/><text x="${x}" y="${y + 5}"><tspan class="n">${n}</tspan> ${RX[id].short}</text></g>`;
+    M.innerHTML = `
+      <path class="river" d="M24,84 L470,84 C560,84 600,110 650,168 L700,168"/>
+      <path class="river r2" d="M24,250 L430,250 C520,250 580,210 650,168"/>
+      <path class="river r2" d="M430,250 C520,250 580,290 650,332"/>
+      <path class="river r3" d="M24,416 L470,416 C560,416 600,390 650,332"/>
+      <path class="river bad" d="M650,332 L816,332"/>
+      <path class="river" d="M650,168 L816,168"/>
+      <text x="30" y="66">Ar–C≡N + N₃⁻</text><text class="cn" x="30" y="116">腈中间体 + 过量的叠氮化钠</text>
+      <text x="318" y="66">Ar–CN₄H</text><text class="cn" x="318" y="116">四唑，留在产品里</text>
+      <text x="470" y="66">残余 N₃⁻</text>
+      <text x="30" y="232">NO₂⁻ + H⁺</text><text class="cn" x="30" y="282">亚硝酸钠 + 酸，pH ≈ 2.8</text>
+      <text x="262" y="232">HNO₂</text>
+      <text x="360" y="232">N₂O₃ / NO⁺</text><text class="cn" x="360" y="282">亚硝化物种</text>
+      <text x="30" y="398">HCON(CH₃)₂</text><text class="cn" x="30" y="448">回收 DMF</text>
+      <text x="318" y="398">(CH₃)₂NH</text><text class="cn" x="318" y="448">二甲胺 DMA，11.8 mg/L</text>
+      <text x="676" y="150">N₂↑ + N₂O↑</text><text class="cn" x="676" y="200">本意：叠氮销毁</text>
+      <text class="bad-t" x="676" y="314">(CH₃)₂N–N=O</text><text class="cn bad-t" x="676" y="364" style="font-family:var(--serif)">意外：NDMA</text>
+      ${pill('tetrazole', '①', 230, 84)}${pill('protonation', '②', 190, 250)}${pill('quench', '③', 575, 196)}${pill('hydrolysis', '④', 230, 416)}${pill('nitrosation', '⑤', 575, 304)}`;
+
+    const view = new Ink3D.MolView($('#rx-canvas'), { motion: 'sway', segDur: 2.7, onTime });
+    const seek = $('#rx-seek'), play = $('#rx-play'), caps = $('#rx-caps');
+    let cur = null;
+    function onTime(t, v) {
+      if (document.activeElement !== seek) seek.value = t;
+      const k = Math.min(v.last - 1, Math.floor(t + 1e-6));
+      $$('li', caps).forEach((li, i) => li.classList.toggle('on', i === k));
+    }
+    const setPlay = (on) => { on ? view.play() : view.pause(); play.textContent = on ? '❚❚' : '▶'; };
+    function load(id) {
+      cur = id; const r = RX[id];
+      $$('.rx', M).forEach((g) => g.classList.toggle('on', g.dataset.rx === id));
+      $('#rx-title').textContent = r.title;
+      setHTML($('#rx-eq'), r.eq); setHTML($('#rx-note'), r.note);
+      setHTML(caps, r.caps.map((c, i) => `<li data-n="${'一二三四五'[i]}" data-i="${i}"><span>${c}</span></li>`).join(''));
+      view.load(GEOM.rx[id], r.view); seek.max = view.last; seek.value = 0;
+      setPlay(!reduce);
+    }
+    $$('.rx', M).forEach((g) => {
+      g.addEventListener('click', () => load(g.dataset.rx));
+      g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); load(g.dataset.rx); } });
+    });
+    play.addEventListener('click', () => setPlay(!view.playing));
+    seek.addEventListener('input', () => { setPlay(false); view.seek(+seek.value); });
+    caps.addEventListener('click', (e) => { const li = e.target.closest('li'); if (!li) return; setPlay(false); view.seek(+li.dataset.i + 1); });
+    load('nitrosation');
+
+    /* 结构式 */
+    const U = 36;
+    function mol(x, y, atoms, bonds) {
+      let s = '';
+      const pos = atoms.map(([ux, uy]) => [x + ux * U, y - uy * U]);
+      for (const [i, j, o = 1] of bonds) {
+        let [x1, y1] = pos[i], [x2, y2] = pos[j];
+        const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L;
+        const cut = (a) => (atoms[a][2] ? 7 + 4.5 * [...atoms[a][2]].length : 0);
+        x1 += ux * cut(i); y1 += uy * cut(i); x2 -= ux * cut(j); y2 -= uy * cut(j);
+        const offs = o === 2 ? [-3.2, 3.2] : o === 3 ? [-5.2, 0, 5.2] : [0];
+        for (const f of offs) s += `<line class="b" x1="${x1 - uy * f}" y1="${y1 + ux * f}" x2="${x2 - uy * f}" y2="${y2 + ux * f}"/>`;
+      }
+      atoms.forEach(([, , lab], i) => { if (lab) s += `<text x="${pos[i][0]}" y="${pos[i][1]}">${lab}</text>`; });
+      return s;
+    }
+    const arrow = (x1, x2, y, top, bot) => `<path class="arrow" d="M${x1},${y} L${x2},${y} M${x2 - 9},${y - 6} L${x2},${y} L${x2 - 9},${y + 6}"/><text class="cond" x="${(x1 + x2) / 2}" y="${y - 12}">${top}</text><text class="cond" x="${(x1 + x2) / 2}" y="${y + 20}">${bot}</text>`;
+    const cap = (x, t, hot) => `<text class="cap ${hot ? 'hot' : ''}" x="${x}" y="172">${t}</text>`;
+    const DMF = [[[-1.732, 0, 'O'], [-0.866, -0.5], [0, 0, 'N'], [0, 1], [0.866, -0.5]], [[0, 1, 2], [1, 2], [2, 3], [2, 4]]];
+    const DMA = [[[-0.866, -0.5], [0, 0, 'N'], [0.866, -0.5], [0, 0.8, 'H']], [[0, 1], [1, 2], [1, 3]]];
+    const NDMA = [[[-0.866, -0.5], [0, 0, 'N'], [0, 1], [0.866, -0.5, 'N'], [1.732, 0, 'O']], [[0, 1], [1, 2], [1, 3], [3, 4, 2]]];
+    $('#sk-ndma').innerHTML = mol(100, 92, ...DMF) + arrow(172, 268, 92, 'H₂O，或受热', '水解 / 热分解') + mol(330, 100, ...DMA) + arrow(392, 498, 92, 'HNO₂ ⇌ N₂O₃', 'pH ≈ 3') + mol(545, 92, ...NDMA)
+      + cap(92, 'DMF') + cap(330, '二甲胺 DMA') + cap(572, 'NDMA', true);
+    const NIT = [[[-1.15, 0, 'Ar'], [0, 0, 'C'], [1.1, 0, 'N']], [[0, 1], [1, 2, 3]]];
+    const rr = 0.85, pv = (deg) => [rr * Math.cos(deg * Math.PI / 180), rr * Math.sin(deg * Math.PI / 180)];
+    const TET = [[[...pv(180)], [...pv(252), 'N'], [...pv(324), 'N'], [...pv(36), 'N'], [...pv(108), 'N'], [-1.95, 0, 'Ar'], [-0.52, -1.58, 'H']], [[0, 1], [1, 2], [2, 3, 2], [3, 4], [4, 0, 2], [5, 0], [1, 6]]];
+    $('#sk-tet').innerHTML = mol(92, 92, ...NIT) + `<text x="176" y="92">+</text><text x="216" y="92">N₃⁻</text>` + arrow(262, 398, 92, 'DMF，加热', '[3+2] 环加成，再酸化') + mol(520, 86, ...TET)
+      + cap(86, '芳基腈') + cap(216, '叠氮根') + cap(506, '5-取代 1H-四唑');
+  })();
+
+  /* ================= 肆 分子 ================= */
+  const MOLS = [
+    ['dmf', 'DMF', 'N,N-二甲基甲酰胺', 'C₃H₇NO · 73.09 g/mol', ['沸点 153 °C', '与水互溶'], '四唑步骤的反应溶剂。酰胺的 C–N 键带部分双键性质，所以 O=C–N 连同两个甲基碳都在一个平面上。这根键一断，放出来的就是二甲胺。'],
+    ['dma', 'DMA', '二甲胺', 'C₂H₇N · 45.08 g/mol', ['沸点 7 °C', '共轭酸 pKa 10.73'], '仲胺：氮上两个碳，一个氢，再加一对孤对电子。氮是三角锥形的，孤对电子朝锥尖那一侧伸出去，那里就是被亚硝化的位置。'],
+    ['ndma', 'NDMA', 'N-亚硝基二甲胺', 'C₂H₆N₂O · 74.08 g/mol', ['沸点约 152 °C', '与水互溶，log P ≈ −0.57', '可接受摄入量 96 ng/天'], '嫌疑最大的杂质。C₂N–N=O 这五个重原子共平面，N–N 键带部分双键性质。沸点和 DMF 只差 1 °C 左右，蒸馏分不开；溶于水，所以水洗带得走。'],
+    ['hono', 'HNO₂', '亚硝酸', 'HNO₂ · 47.01 g/mol', ['pKa ≈ 3.3（文献 3.1–3.4）', '只存在于溶液中'], '亚硝酸钠遇酸生成。它自己不算强的亚硝化试剂，但两分子脱去一分子水，就成了 N₂O₃。'],
+    ['n2o3', 'N₂O₃', '三氧化二氮', 'N₂O₃ · 76.01 g/mol', ['N–N 键长 1.86 Å', 'pH 2–4 时的主要亚硝化物种'], '中间那根 N–N 键特别长、特别弱，等于随身带着一个随时可以递出去的 NO⁺。它要两分子亚硝酸才凑得成，所以亚硝化的速率跟亚硝酸浓度的平方成正比。'],
+    ['tetrazole', '四唑', '1H-四唑', 'CH₂N₄ · 70.05 g/mol', ['pKa ≈ 4.9', '平面芳香环'], '一个碳、四个氮的五元环，酸性与羧酸相当，是沙坦类药物与受体结合的关键基团。案例图 2 画的就是它。'],
+    ['hn3', 'HN₃', '叠氮酸', 'HN₃ · 43.03 g/mol', ['pKa 4.7', '沸点 37 °C'], '残余的叠氮根一遇酸就变成它：易挥发、剧毒、易爆。成环之后必须先把叠氮淬灭掉，原因就在这里。'],
+  ];
+  (function buildMol() {
+    const view = new Ink3D.MolView($('#mol-canvas'), { motion: 'spin', yaw: -0.6, pitch: 0.42 });
+    const chips = $('#mol-chips'), panel = $('#mol-panel');
+    setHTML(chips, MOLS.map(([id, s]) => `<button type="button" data-m="${id}" aria-pressed="false">${s}</button>`).join(''));
+    function pick(id) {
+      const m = MOLS.find((x) => x[0] === id);
+      $$('button', chips).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.m === id)));
+      view.load(GEOM.mol[id], { yaw: -0.6, pitch: 0.42, motion: 'spin', zoom: 1.12 });
+      setHTML(panel, `<span class="p-no ${/[A-Z]/.test(m[1]) ? 'latin' : ''}">${m[1]}</span><div class="p-title">${m[2]}</div><div class="p-sub">${m[3]}</div><ul>${m[4].map((x) => `<li>${x}</li>`).join('')}</ul><h4>在这个案子里</h4><p>${m[5]}</p>`);
+    }
+    chips.addEventListener('click', (e) => { const b = e.target.closest('button'); b && pick(b.dataset.m); });
+    pick('ndma');
+  })();
+
+  /* ================= 伍 速率 ================= */
+  const K = 0.0017, KA = 10 ** -3.4, M_DMA = 45.084, M_NDMA = 74.08, M_NO2 = 46.005;
+  const g = (pH) => { const H = 10 ** -pH; return 4 * KA * H / (KA + H) ** 2; };
+  const rate = (pH, no2M, dma) => K * (dma / 1000 / M_DMA) * no2M ** 2 * g(pH);      // mol/(L·s)
+  const NO2_END = 0.4 * 8 ** 3 / M_NO2, NO2_WASHED = 3.2 / M_NO2;                    // mM：回推的淬灭终点；末次水洗后
+  (function buildRate() {
+    const ZMAX = Math.log10(rate(3.4, 0.1, 20)), SPAN = 12.5;
+    const vOf = (mM) => (Math.log10(mM) + 2) / 4;
+    const I = { ph: $('#i-ph'), no2: $('#i-no2'), dma: $('#i-dma'), t: $('#i-t'), v: $('#i-v') };
+    const surf = new Ink3D.SurfView($('#rate-canvas'), {
+      fn: (u, v) => (Math.log10(rate(8 * u, 10 ** (-2 + 4 * v) * 1e-3, +I.dma.value)) - (ZMAX - SPAN)) / SPAN,
+      xt: [0, 2, 4, 6, 8].map((p) => [p / 8, String(p)]), zt: [['0.01', 0], ['0.1', 0.25], ['1', 0.5], ['10', 0.75], ['100', 1]].map(([s, v]) => [v, s]),
+      xName: 'pH', zName: '亚硝酸根 mM', yName: '生成速率（对数）',
+    });
+    surf.set({ ridge: 3.4 / 8, bands: SPAN, marks: [
+      { u: 2.8 / 8, v: vOf(NO2_END), label: '淬灭结束时', color: 'red', lift: 0.2 },
+      { u: 2.8 / 8, v: vOf(NO2_WASHED), label: '末次水洗后', color: 'ochre', lift: 0.2 },
+    ] });
+    function update() {
+      const pH = +I.ph.value, mM = 10 ** +I.no2.value, dma = +I.dma.value, t = +I.t.value, V = +I.v.value;
+      const r = rate(pH, mM * 1e-3, dma), ug = r * M_NDMA * 1e6 * 3600, ppm = ug * (t / 60) * V / 1000, ratio = ppm / 0.52;
+      $('#o-ph').textContent = pH.toFixed(1); $('#o-no2').textContent = `${num(mM)} mM（${num(mM * M_NO2)} mg/L）`;
+      $('#o-dma').textContent = `${dma.toFixed(1)} mg/L`; $('#o-t').textContent = t >= 120 ? `${num(t / 60)} 小时` : `${t} 分钟`; $('#o-v').textContent = `${V} L`;
+      setHTML($('#r-g'), `${Math.round(g(pH) * 100)}<small>%</small>`);
+      setHTML($('#r-rate'), `${num(ug)}<small>µg/(L·h)</small>`);
+      setHTML($('#r-ppm'), `${num(ppm)}<small>ppm</small>`);
+      let s;
+      if (ratio >= 1) s = `按这组条件能生成约 ${num(ppm)} ppm，已经达到或超过 0.52 ppm。量级上不需要别的解释，前提是这些 NDMA 全都留在了产品里。`;
+      else if (ratio >= 0.05) s = `约 ${num(ppm)} ppm，是 0.52 ppm 的 ${Math.round(ratio * 100)}%。还差一截：亚硝酸根浓度再高 ${times(Math.sqrt(1 / ratio))} 倍就补齐了，因为它是平方关系。`;
+      else if (ratio >= 1e-4) s = `约 ${num(ppm)} ppm，比 0.52 ppm 少 ${times(1 / ratio)} 倍。单靠这组条件解释不了筛查信号；亚硝酸根浓度要高 ${times(Math.sqrt(1 / ratio))} 倍才够。`;
+      else s = `约 ${num(ppm)} ppm，可以忽略。亚硝酸根稀到这个程度，溶液里的亚硝化基本停了。`;
+      setHTML($('#r-verdict'), s);
+      surf.set({ probe: [pH / 8, vOf(mM)] });
+    }
+    Object.values(I).forEach((i) => i.addEventListener('input', update));
+    const PRE = { quench: { ph: 2.8, no2: Math.log10(NO2_END), dma: 11.8, t: 60 }, washed: { ph: 2.8, no2: Math.log10(NO2_WASHED), dma: 11.8, t: 480 }, old: { ph: 2.9, no2: Math.log10(NO2_END), dma: 1.0, t: 60 }, hot: { ph: 2.8, no2: Math.log10(30), dma: 11.8, t: 60 } };
+    $('#rate-presets').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; for (const [k, v] of Object.entries(PRE[b.dataset.p])) I[k].value = v; update(); });
+    I.no2.value = Math.log10(NO2_END); update();
+  })();
+
+  /* ================= 陆 水洗 ================= */
+  (function buildWash() {
+    const el = $('#wash-chart'), W = 560, H = 330, L = 58, R = 26, T = 22, B = 48;
+    const x = (n) => L + n / 3 * (W - L - R), y = (v) => T + (3 - Math.log10(v)) / 4 * (H - T - B);
+    let s = '';
+    for (const v of [0.1, 1, 10, 100, 1000]) s += `<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 9}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+    for (let n = 0; n <= 3; n++) s += `<line class="tick" x1="${x(n)}" x2="${x(n)}" y1="${H - B}" y2="${H - B + 6}"/><text x="${x(n)}" y="${H - B + 22}" text-anchor="middle">${n === 0 ? '淬灭后' : n + ' 洗后'}</text>`;
+    s += `<line class="axis" x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}"/><text class="axis-name" x="${L}" y="12">亚硝酸根 mg/L（对数）</text>`;
+    const pts = [0, 1, 2, 3].map((n) => [n, 0.4 * 8 ** (3 - n)]);
+    s += `<path class="ln old guess" d="M${pts.map(([n, v]) => `${x(n)},${y(v)}`).join(' L')}"/>`;
+    const dot = (n, v, cls, lab, tip, dx = 12, dy = 4, anchor = 'start') => `<circle class="pt ${cls}" cx="${x(n)}" cy="${y(v)}" r="6.5"/><text class="lab ${cls.includes('now') && !cls.includes('hollow') ? 'hot' : ''} halo-t" x="${x(n) + dx}" y="${y(v) + dy}" text-anchor="${anchor}">${lab}</text><circle class="hit" cx="${x(n)}" cy="${y(v)}" r="18" tabindex="0" data-tip="${esc(tip)}"/>`;
+    s += dot(0, pts[0][1], 'hollow old', '≈ 205', '<b>淬灭后，未洗</b><br>回推值约 205 mg/L（4.5 mM）<br>没有实测');
+    s += dot(1, pts[1][1], 'hollow old', '≈ 26', '<b>一洗后</b><br>回推值约 26 mg/L<br>没有实测');
+    s += dot(2, 3.2, 'now', '3.2　现行工艺到此为止', '<b>两洗后 · 现行工艺</b><br>实测 3.2 mg/L（0.07 mM）');
+    s += dot(3, 0.4, 'old', '历史工艺　0.4', '<b>三洗后 · 历史工艺</b><br>实测 0.4 mg/L', 8, -14, 'end');
+    el.innerHTML = s;
+    tips(el.parentNode);
+
+    const iF = $('#i-f');
+    function purge() {
+      const f = +iF.value, v = 0.52 / f;
+      $('#o-f').textContent = `${f.toFixed(1)} 倍`;
+      logStrip($('#purge-chart'), { min: 0.01, max: 1, name: 'NDMA（若筛查信号确为 NDMA）',
+        lines: [{ v: 0.40, label: '限度 0.40', hot: true, row: 1 }, { v: 0.12, label: '30%', row: 0 }, { v: 0.04, label: '10%', row: 0 }],
+        points: [{ v: 0.52, label: '两洗 0.52', cls: 'now', hot: true, row: 1, anchor: 'start' }, { v, label: `补第三洗 ${num(v)}`, cls: 'hollow now', row: 0, anchor: v > 0.3 ? 'end' : 'middle' }] });
+      let s = `每洗清除 ${f.toFixed(1)} 倍的话，第三洗能把 0.52 降到 ${num(v)} ppm。`;
+      s += v > 0.40 ? '仍然超过限度。' : v > 0.12 ? '过了限度这一关，但还在警戒线（限度的 30%）之上，余量很薄。' : v > 0.04 ? '落在限度的 10%–30% 之间。' : '低于限度的 10%。';
+      s += ' 清除倍数要到 1.3 才低于限度，到 4.3 才低于限度的 30%。水洗只是兜底：源头不处理，每一批都在赌这一洗的效率。';
+      setHTML($('#purge-verdict'), s);
+    }
+    iF.addEventListener('input', purge); purge();
+
+    const iV = $('#i-vd');
+    function dma() {
+      const V = +iV.value; $('#o-vd').textContent = `${V} L`;
+      const row = (name, c, lt) => { const mg = c * V, ppm = mg * M_NDMA / M_DMA; return `<tr><td>${name}</td><td class="r">${lt}${num(mg)} mg</td><td class="r">${lt}${num(ppm)} ppm</td><td class="r">${lt}${times(ppm / 0.40)} 倍</td><td class="r">${lt ? '&gt; ' : ''}${num(0.52 / ppm * 100)}%</td></tr>`; };
+      setHTML($('#dma-table'), `<thead><tr><th>工艺</th><th class="r">每千克 API 带入的 DMA</th><th class="r">全部变成 NDMA 的上限</th><th class="r">是限度的</th><th class="r">0.52 ppm 只需其中</th></tr></thead><tbody>${row('现行 · 11.8 mg/L', 11.8, '')}${row('历史 · &lt; 1.0 mg/L', 1.0, '&lt; ')}</tbody>`);
+    }
+    iV.addEventListener('input', dma); dma();
+  })();
+
+  /* ================= 柒 检测 ================= */
+  (function buildAssay() {
+    logStrip($('#ladder-chart'), { min: 0.01, max: 1000, name: '同一把对数尺上的几个浓度',
+      bands: [{ a: 500, b: 1000, label: 'UV 能定量的范围', row: 2 }, { a: 0.04, b: 0.12, label: '确证方法该有的定量限', cls: 'hot', row: 2 }],
+      lines: [{ v: 500, label: 'UHPLC-UV 定量限 500', row: 0, cls: 'tick' }, { v: 0.40, label: 'NDMA 限度 0.40', hot: true, row: 0, anchor: 'start' }, { v: 0.11, label: 'NDEA 限度 0.11', row: 0, anchor: 'end', cls: 'tick' }],
+      points: [{ v: 0.52, label: '筛查信号 0.52', cls: 'now', hot: true }] });
+    const lad = $('#ladder-chart'), [, , W] = lad.getAttribute('viewBox').split(' ').map(Number);
+    const lx = (v) => 30 + (Math.log10(v) + 2) / 5 * (W - 60);
+    lad.insertAdjacentHTML('beforeend', `<path class="ln old" d="M${lx(0.40) + 6},114 L${lx(500) - 6},114 M${lx(0.40) + 14},109 L${lx(0.40) + 6},114 L${lx(0.40) + 14},119 M${lx(500) - 14},109 L${lx(500) - 6},114 L${lx(500) - 14},119"/><text class="lab halo-t" x="${(lx(0.40) + lx(500)) / 2}" y="118" text-anchor="middle">相差 1250 倍</text>`);
+
+    const el = $('#hrms-chart'), W2 = 600, H = 300, L = 40, R = 16, T = 40, B = 40, X0 = 75.045, X1 = 75.075;
+    const M0 = 75.0553, M15 = 75.0571, M13 = 75.0634;
+    const x = (m) => L + (m - X0) / (X1 - X0) * (W2 - L - R), y = (v) => H - B - v * (H - T - B);
+    const iR = $('#i-r'), iD = $('#i-d'), bOn = $('#ndma-on'), bOff = $('#ndma-off');
+    let on = true, state = null;
+    function draw() {
+      const Rp = 10 ** +iR.value, D = +iD.value, fw = M0 / Rp, c = 4 * Math.LN2 / fw ** 2;
+      const amp = [[M0, on ? 0.52 : 0], [M15, D * 0.00364], [M13, D * 0.0324]];
+      const G = (m, mu) => Math.exp(-c * (m - mu) ** 2);
+      const N = 260, xs = [...Array(N + 1)].map((_, i) => X0 + (X1 - X0) * i / N);
+      const comp = amp.map(([mu, a]) => xs.map((m) => a * G(m, mu))), sum = xs.map((_, i) => comp[0][i] + comp[1][i] + comp[2][i]);
+      const top = Math.max(...sum, 1e-9), path = (arr) => 'M' + arr.map((v, i) => `${x(xs[i]).toFixed(1)},${y(v / top).toFixed(1)}`).join(' L');
+      $('#o-r').textContent = `${num(Math.round(Rp / 100) * 100, 3)}`; $('#o-d').textContent = `${D} ppm`;
+      let s = `<line class="axis" x1="${L}" x2="${W2 - R}" y1="${H - B}" y2="${H - B}"/>`;
+      for (const m of [75.05, 75.06, 75.07]) s += `<line class="tick" x1="${x(m)}" x2="${x(m)}" y1="${H - B}" y2="${H - B + 6}"/><text x="${x(m)}" y="${H - B + 22}" text-anchor="middle">${m.toFixed(2)}</text>`;
+      s += `<text class="axis-name" x="${W2 - R}" y="${H - B + 22}" text-anchor="end">m/z</text><text class="axis-name" x="${L}" y="12">相对强度</text>`;
+      [[M0, 'NDMA', 'lim'], [M15, '¹⁵N', 'ln blue'], [M13, '¹³C', 'ln ochre']].forEach(([m, t, cls], i) => { s += `<line class="${cls}" style="stroke-width:1.2" x1="${x(m)}" x2="${x(m)}" y1="${T - 8}" y2="${H - B}" opacity=".5"/><text class="lab halo-t" x="${x(m) + (i === 0 ? -4 : 4)}" y="${T - 14}" text-anchor="${i === 0 ? 'end' : 'start'}">${t}</text>`; });
+      s += `<path class="area" d="${path(sum)} L${x(X1)},${y(0)} L${x(X0)},${y(0)} Z"/><path class="ln ochre" d="${path(comp[2])}"/><path class="ln blue" d="${path(comp[1])}"/><path class="ln now" d="${path(comp[0])}"/><path class="ln" style="stroke-width:2.6" d="${path(sum)}"/>`;
+      s += `<g id="hx" style="display:none"><line class="cross" y1="${T - 8}" y2="${H - B}"/></g><rect class="hit" x="${L}" y="${T - 8}" width="${W2 - L - R}" height="${H - B - T + 8}"/>`;
+      el.innerHTML = s; chemify(el); state = { amp, G, top };
+      const fake = amp[1][1] * G(M0, M15) + amp[2][1] * G(M0, M13), app = amp[0][1] + fake;
+      let v = `在 m/z 75.0553 处，仪器读到的相当于 <strong>${num(app)} ppm</strong>，其中 ${num(fake)} ppm 来自 DMF 的同位素峰。`;
+      if (!on && fake >= 0.05) v += ' 样品里明明没有 NDMA，却读出了信号。';
+      else if (on && fake > 0.1) v += ' 真信号被抬高了，会把一个本来只是略超限的结果报得更高。';
+      else v += ' 这个分辨率下，干扰已经可以忽略。';
+      v += Rp >= 42000 ? ' 分辨率过了约 42000 这道线（75.055 ÷ 0.0018），NDMA 和 ¹⁵N 峰才算分得开。' : ' 要把 NDMA 和 ¹⁵N 峰分开，分辨率需要约 42000 以上（75.055 ÷ 0.0018）。';
+      setHTML($('#hrms-verdict'), v);
+    }
+    const tip = makeTip(el.parentNode);
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect(), m = X0 + ((e.clientX - r.left) / r.width * W2 - L) / (W2 - L - R) * (X1 - X0), hx = $('#hx', el);
+      if (!state || m < X0 || m > X1) { hx && (hx.style.display = 'none'); tip.hidden = true; return; }
+      hx.style.display = ''; hx.firstChild.setAttribute('x1', x(m)); hx.firstChild.setAttribute('x2', x(m));
+      const [a, b, c] = state.amp.map(([mu, amp]) => amp * state.G(m, mu));
+      setHTML(tip, `<b>m/z ${m.toFixed(4)}</b><br>NDMA ${num(a)} · ¹⁵N-DMF ${num(b)} · ¹³C-DMF ${num(c)}<br>合计相当于 ${num(a + b + c)} ppm`);
+      tip.hidden = false; tip.style.left = clamp(e.clientX - r.left + 14, 0, r.width - tip.offsetWidth - 4) + 'px'; tip.style.top = Math.max(0, e.clientY - r.top - tip.offsetHeight - 12) + 'px';
+    });
+    el.addEventListener('pointerleave', () => { const hx = $('#hx', el); hx && (hx.style.display = 'none'); tip.hidden = true; });
+    const setOn = (v) => { on = v; bOn.setAttribute('aria-pressed', String(v)); bOff.setAttribute('aria-pressed', String(!v)); draw(); };
+    bOn.addEventListener('click', () => setOn(true)); bOff.addEventListener('click', () => setOn(false));
+    iR.addEventListener('input', draw); iD.addEventListener('input', draw); draw();
+  })();
+
+  /* ================= 捌 断案 ================= */
+  const HYP = [
+    { id: '甲', name: '淬灭时原位生成', prof: [0, 0, 1, 0.45, 0.2, 0.2, 0.2], grid: [0.04, 0.1, 0.35, 1], fifth: 1,
+      claim: '回收 DMF 把 DMA 带进釜里，淬灭时被亚硝化物种变成 NDMA。',
+      pro: '前体（DMA 多了 12 倍）、试剂（亚硝酸）、酸度（pH 2.8）三样齐全，和缬沙坦事件的机理一致。',
+      con: '按水相动力学粗算，量级偏低。要凑够 0.52 ppm，需要更高的瞬时亚硝酸浓度，或者釜内有比进料更多的 DMA。',
+      test: '淬灭之前测不到 NDMA，淬灭之后出现。原生 DMF 加标 DMA 到 11.8 mg/L，同样能重现。' },
+    { id: '乙', name: '随回收溶剂带入', prof: [0.9, 0.9, 0.9, 0.42, 0.2, 0.2, 0.2], grid: [0, 0, 0.35, 1], fifth: 0,
+      claim: 'NDMA 在回收商那里就已经混进了 R-21，比如共用储罐里残留着别家客户的物料。蒸馏分不开它。',
+      pro: '回收商的追溯记录不全。NDMA 沸点约 152 °C，和 DMF 几乎相同。',
+      con: '这要求回收商那边同时有胺和亚硝化来源，或者直接接触过含亚硝胺的物料，目前没有证据。',
+      test: '直接在 R-21 和淬灭前的反应液里测到 NDMA。原生 DMF 加标 DMA 不能重现。' },
+    { id: '丙', name: '一直都有，只是少洗了一次', prof: [0, 0, 1, 0.45, 0.2, 0.2, 0.2], old: [0, 0, 1, 0.45, 0.2, 0.08, 0.08], grid: [0.12, 1, 0.12, 1], fifth: 1,
+      claim: '两种工艺都会生成 NDMA。历史工艺靠第三次水洗，把它清到了看不见的水平。',
+      pro: '亚硝酸根残留差 8 倍，说明第三洗确有清除力。NDMA 溶于水。历史工艺的 DMA 按化学计量也远远够用。',
+      con: '历史工艺没有筛查数据，无法直接比较。',
+      test: '历史工艺的留样测出低但不是零的 NDMA。2×2 实验里水洗次数的效应明显。逐洗清除倍数实测大于 1.3。' },
+    { id: '丁', name: '干燥贮存中后期生成', prof: [0, 0, 0.05, 0.03, 0.02, 0.45, 1], grid: [0.02, 0.3, 0.08, 1], fifth: 0.8,
+      claim: 'API 里残留的亚硝酸根和胺（或残留 DMF），在干燥、贮存中继续反应。',
+      pro: '两洗工艺的亚硝酸根残留高 8 倍。制剂里有固态缓慢生成亚硝胺的文献先例。',
+      con: '按 3.2 mg/L 的亚硝酸根算，溶液里的速率小到可以忽略。固态是否不同，要看数据。',
+      test: '同一批留样隔时间复测，NDMA 持续上升。干燥前后有跳变。' },
+    { id: '戊', name: '分析假象，或别的亚硝胺', prof: null, grid: null, fifth: null,
+      claim: '信号不是 NDMA，或者不全是。可能是残留 DMF 的同位素峰，可能是前处理时现生成的，也可能是别的亚硝胺，比如限度只有 0.11 ppm 的 NDEA。',
+      pro: '筛查没有确证身份。DMF 正是工艺溶剂。回收商处理多家客户的溶剂，胺的种类不可知。',
+      con: '案例没有给筛查方法的细节，无从判断。',
+      test: '对照品保留时间、两对离子的比值、高分辨精确质量，任何一项对不上。或者加了清除剂后信号下降。' },
+  ];
+  (function buildHyp() {
+    const chips = $('#hyp-chips'), el = $('#hyp-chart'), W = 600, H = 300, L = 54, R = 20, T = 26, B = 64;
+    const PTS = ['进料 DMF', '淬灭前', '淬灭后', '一洗后', '二洗后', '成品', '贮存后'];
+    const x = (i) => L + 20 + i / 6 * (W - L - R - 40), y = (v) => T + (1 - v) * (H - T - B);
+    setHTML(chips, HYP.map((h) => `<button type="button" data-h="${h.id}" aria-pressed="false"><i>${h.id}</i>${h.name}</button>`).join(''));
+    function pick(id) {
+      const h = HYP.find((k) => k.id === id);
+      $$('button', chips).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.h === id)));
+      let s = '';
+      [[0, '无'], [0.5, '中'], [1, '高']].forEach(([v, t]) => { s += `<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 9}" y="${y(v) + 4}" text-anchor="end">${t}</text>`; });
+      PTS.forEach((t, i) => { s += `<text x="${x(i)}" y="${H - B + 24}" text-anchor="middle">${t}</text>`; });
+      s += `<line class="axis" x1="${L}" x2="${W - R}" y1="${y(0)}" y2="${y(0)}"/><text class="axis-name" x="${L}" y="12">NDMA（相对水平）</text>`;
+      s += `<line class="tick" x1="${(x(1) + x(2)) / 2}" x2="${(x(1) + x(2)) / 2}" y1="${T}" y2="${y(0)}" stroke-dasharray="2 5"/><text x="${(x(1) + x(2)) / 2}" y="${H - B + 46}" text-anchor="middle" class="axis-name">↑ 加亚硝酸钠</text>`;
+      if (h.prof) {
+        if (h.old) s += `<path class="ln old" d="M${h.old.map((v, i) => `${x(i)},${y(v)}`).join(' L')}"/>` + h.old.slice(5).map((v, i) => `<circle class="pt old" cx="${x(i + 5)}" cy="${y(v)}" r="5"/>`).join('');
+        s += `<path class="ln now" d="M${h.prof.map((v, i) => `${x(i)},${y(v)}`).join(' L')}"/>`;
+        h.prof.forEach((v, i) => { s += `<circle class="pt now" cx="${x(i)}" cy="${y(v)}" r="6"/><circle class="hit" cx="${x(i)}" cy="${y(v)}" r="16" tabindex="0" data-tip="${esc(`<b>${PTS[i]}</b><br>预期：${v < 0.04 ? '测不到' : v < 0.3 ? '低' : v < 0.7 ? '中等' : '高'}`)}"/>`; });
+      } else {
+        s += `<path class="ln old guess" d="M${x(0)},${y(0.5)} L${x(6)},${y(0.5)}"/><text class="lab halo-t" x="${W / 2}" y="${y(0.5) - 14}" text-anchor="middle">与取样位置无关：读数跟着样品里的 DMF 和亚硝酸根走</text>`;
+      }
+      el.innerHTML = s;
+      setHTML($('#hyp-legend'), h.prof ? `<span><i class="ndma"></i>现行工艺（两洗）</span>${h.old ? '<span><i style="background:var(--ink-soft)"></i>历史工艺（多一洗）</span>' : ''}` : '<span class="pale">这种说法不预言固定的形状</span>');
+      const cell = (v, lab) => (v == null ? `<div class="cell q"><i style="--v:.5"></i><em>${lab}</em></div>` : `<div class="cell"><i style="--v:${v}"></i><em>${lab}</em></div>`);
+      const gv = h.grid || [null, null, null, null];
+      setHTML($('#hyp-grid'), `<div></div><div>三洗</div><div>两洗</div><div class="rowh">原生 DMF</div>${cell(gv[0], '')}${cell(gv[1], '')}<div class="rowh">回收 DMF</div>${cell(gv[2], '')}${cell(gv[3], '现行')}`);
+      setHTML($('#hyp-fifth'), `<div>原生 DMF + 加标 DMA · 两洗</div>${cell(h.fifth, '第五组')}`);
+      setHTML($('#hyp-panel'), `<span class="p-no">${h.id}</span><div class="p-title">${h.name}</div><h4>它主张</h4><p>${h.claim}</p><h4>支持它的</h4><p>${h.pro}</p><h4>它的软肋</h4><p>${h.con}</p><h4>一锤定音的结果</h4><p>${h.test}</p>`);
+    }
+    chips.addEventListener('click', (e) => { const b = e.target.closest('button'); b && pick(b.dataset.h); });
+    tips(el.parentNode); pick('甲');
+  })();
+
+  /* ================= 玖 对策 ================= */
+  (function buildStack() {
+    const box = $('#stack'), iF = $('#i-f2');
+    const ITEMS = [
+      { id: 'dma', label: '回收 DMF 的 DMA 压到 ≤ 1.0 mg/L', form: () => 1 / 11.8, carry: () => 1, n1: '一级关系：DMA 少多少，生成就少多少。', n2: '带进来的是现成的 NDMA，DMA 再低也无济于事。' },
+      { id: 'ndma', label: '回收 DMF 增加「NDMA 不得检出」', form: () => 1, carry: () => 0, n1: '溶剂里本来没有 NDMA 的话，这一条不改变结果，但它是排除「带入」的保险。', n2: '直接堵住来源。' },
+      { id: 'wash', label: '恢复第三次水洗', form: () => 1 / +iF.value, carry: () => 1 / +iF.value, n1: '清除已经生成的 NDMA，倍数待实测。', n2: '带入的 NDMA 同样洗得掉一部分。' },
+      { id: 'no2', label: '亚硝酸钠的过量减半', form: () => 1 / 4, carry: () => 1, n1: '二级关系：减半得四分之一。', n2: '对已经带入的 NDMA 没有作用。' },
+      { id: 'time', label: '淬灭后立即加清除剂，停留时间减半', form: () => 1 / 2, carry: () => 1, n1: '一级关系：胺和亚硝酸同处的时间减半。', n2: '对已经带入的 NDMA 没有作用。' },
+    ];
+    let mode = 'form';
+    const on = new Set();
+    const fac = (f) => (f === 0 ? '→ 0' : f === 1 ? '× 1' : `× 1/${+(1 / f).toFixed(1)}`);
+    function render() {
+      setHTML(box, ITEMS.map((it) => {
+        return `<label><input type="checkbox" data-id="${it.id}" ${on.has(it.id) ? 'checked' : ''}><span>${it.label}</span><b>${fac(it[mode]())}</b><small>${mode === 'form' ? it.n1 : it.n2}</small></label>`;
+      }).join(''));
+      $('#o-f2').textContent = `${(+iF.value).toFixed(1)} 倍`;
+      let v = 0.52; const chain = ['0.52'];
+      for (const it of ITEMS) if (on.has(it.id)) { const f = it[mode](); v *= f; if (f !== 1) chain.push(f === 0 ? '0' : `1/${+(1 / f).toFixed(1)}`); }
+      const zero = v === 0;
+      logStrip($('#stack-chart'), { min: 0.001, max: 1, name: '预计的 NDMA',
+        lines: [{ v: 0.40, label: '限度 0.40', hot: true, row: 1 }, { v: 0.12, label: '30%', row: 0 }, { v: 0.04, label: '10%', row: 0 }],
+        points: [{ v: 0.52, label: '现状 0.52', cls: 'now', hot: true, row: 1, anchor: 'end' }, { v: zero ? 0.001 : v, label: zero ? '低于定量限' : on.size ? `叠加后 ${num(v)}` : '', cls: 'hollow now', row: 0, anchor: v < 0.004 ? 'start' : v > 0.3 ? 'end' : 'middle' }] });
+      setHTML($('#stack-eq'), !on.size ? '勾选左边的措施，看它们怎么相乘' : zero ? '溶剂里不再有 NDMA → 低于定量限' : `${chain.join(' × ')} = ${num(v)} ppm`);
+      let s = zero ? '来源堵住了，预计低于方法定量限。' : v > 0.40 ? '仍然超过限度。' : v > 0.12 ? '过了限度，但还在警戒线（限度的 30%）之上，余量很薄。' : v > 0.04 ? '落在限度的 10%–30% 之间。' : '低于限度的 10%。到了这个水平，才有资格谈减少检测频次。';
+      if (mode === 'carry') s += ' 根因若是带入，亚硝酸和时间这两项完全不起作用。对策选错了方向，钱花了，风险还在。所以要先断案，再定对策。';
+      else if (on.size >= 2) s += ' 几项措施是相乘的关系，每项都不必做到极致。';
+      setHTML($('#stack-verdict'), s);
+    }
+    box.addEventListener('change', (e) => { const c = e.target.closest('input'); if (!c) return; c.checked ? on.add(c.dataset.id) : on.delete(c.dataset.id); render(); });
+    iF.addEventListener('input', render);
+    $('#stack-mode').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; mode = b.dataset.m; $$('#stack-mode button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); render(); });
+    render();
+  })();
+
+  chemify(document.body);
+})();
+</script>
+</body>
+</html>

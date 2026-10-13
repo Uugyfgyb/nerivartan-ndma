@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="水墨风格讲解：Nerivartan 原料药里 0.52 ppm 的亚硝胺信号。全工艺流程、全部化学反应、三维分子与机理、速率曲面、确证方法与控制策略。">
+<title>一滴墨的来历 · Nerivartan 亚硝胺案</title>
+<link rel="stylesheet" href="ink.css">
+</head>
+<body>
+<nav class="tabs" aria-label="章节">
+  <a class="brand" href="#top">一滴墨的来历</a>
+  <a class="t" href="#case"><i>壹</i><span>案情</span></a>
+  <a class="t" href="#flow"><i>贰</i><span>工艺</span></a>
+  <a class="t" href="#chem"><i>叁</i><span>反应</span></a>
+  <a class="t" href="#mol"><i>肆</i><span>分子</span></a>
+  <a class="t" href="#rate"><i>伍</i><span>速率</span></a>
+  <a class="t" href="#wash"><i>陆</i><span>水洗</span></a>
+  <a class="t" href="#assay"><i>柒</i><span>检测</span></a>
+  <a class="t" href="#judge"><i>捌</i><span>断案</span></a>
+  <a class="t" href="#control"><i>玖</i><span>对策</span></a>
+  <a class="t" href="#notes"><i>拾</i><span>出处</span></a>
+</nav>
+
+<div class="scroll" id="top">
+
+<header class="top">
+  <svg class="hills" viewBox="0 0 680 300" aria-hidden="true">
+    <circle class="sun" cx="548" cy="70" r="24"/>
+    <path class="far" d="M0 300 L0 214 Q70 150 132 190 Q196 96 276 168 Q338 118 396 176 Q470 76 560 164 Q624 122 680 150 L680 300 Z"/>
+    <path class="mid" d="M0 300 L0 250 Q90 196 168 236 Q250 168 330 228 Q420 150 520 222 Q604 186 680 214 L680 300 Z"/>
+    <path class="near" d="M0 300 L0 276 Q110 238 214 268 Q318 224 428 262 Q548 226 680 256 L680 300 Z"/>
+  </svg>
+  <div class="eyebrow">CSU Fall 2026 Case Competition · A Pernicious Manufacturing Problem</div>
+  <h1>一滴墨的来历<small>Nerivartan 里那个 0.52 ppm 的信号：从哪里来，怎么认，怎么防</small></h1>
+  <p class="lede">一缸清水里滴进一滴墨，肉眼看不出来，墨却还在。CSU O.W.C.A. 制药的降压药原料 Nerivartan，在痕量亚硝胺筛查里出现了一个约 0.52 ppm 的未知信号，而常规的 UHPLC-UV 对它毫无知觉。这一卷沿着你的摘要走：先看两份批记录差在哪里，再顺着工艺把每一步化学摊开，最后落到怎么确证、怎么防。</p>
+  <div class="figs">
+    <div class="fig key"><b>0.52<small>ppm</small></b><span>痕量筛查里的未知信号，身份和准确浓度都还没确证</span></div>
+    <div class="fig"><b>0.40<small>ppm</small></b><span>NDMA 的限度：96 ng/天 ÷ 0.240 g/天</span></div>
+    <div class="fig"><b>11.8<small>mg/L</small></b><span>回收 DMF（Lot R-21）里的二甲胺；原生 DMF 低于 1.0</span></div>
+    <div class="fig"><b>3 → 2</b><span>放大生产时，淬灭之后的水洗次数</span></div>
+    <div class="fig"><b>1250<small>倍</small></b><span>常规 UV 法的定量限（500 ppm）与限度之间的距离</span></div>
+  </div>
+  <p class="note">页面里的四种标记：<span class="tag fact">案例</span> 案例文件直接给出的数据；<span class="tag infer">推断</span> 由化学原理推出来、还没有数据直接证明的；<span class="tag todo">待检验</span> 需要新实验才能回答的；<span class="tag mine">补充</span> 摘要之外、我替你补进去的想法，用之前请自己核对。</p>
+</header>
+
+<!-- 壹 -->
+<section id="case" aria-labelledby="h-case">
+  <div class="head"><span class="seal">壹</span><h2 id="h-case">案情：两份批记录</h2><span class="en">Table 1, side by side</span></div>
+  <p>供应商审计之后，公司把历史工艺和现行工艺的记录摆到了一起。八项里有五项变了，其中含量只动了 0.1 个百分点，仍然合格。pH 和 UV 结果几乎没变，痕量筛查则是旧工艺根本没做过。没变的和没做的，同样要紧。</p>
+  <div class="legend"><span><i class="bar old"></i>历史工艺</span><span><i class="bar now"></i>现行工艺</span><span class="pale">细条只画在从零起算才有意义的三项上</span></div>
+  <div class="cmp" role="table" aria-label="历史工艺与现行工艺对比">
+    <div class="h">指标</div><div class="h">历史工艺</div><div class="h">现行工艺</div><div class="h d">变化</div>
+
+    <div class="k">DMF 来源</div><div class="v"><b>原生 DMF</b></div><div class="v now"><b>回收 DMF，Lot R-21</b></div><div class="d">换了来源</div>
+    <div class="k">DMF 含量</div><div class="v"><b>99.80%</b></div><div class="v now"><b>99.70%</b></div><div class="d flat">都符合 ≥ 99.5%</div>
+    <div class="k">进料 DMF 中的 DMA</div><div class="v"><b>&lt; 1.0 mg/L</b><i style="--v:.085"></i></div><div class="v now"><b>11.8 mg/L</b><i style="--v:1"></i></div><div class="d"><b>×12</b>以上</div>
+    <div class="k">淬灭后的水洗次数</div><div class="v"><b>3 次</b><i style="--v:1"></i></div><div class="v now"><b>2 次</b><i style="--v:.667"></i></div><div class="d"><b>−1</b>少洗一次</div>
+    <div class="k">末次水洗后的亚硝酸根</div><div class="v"><b>0.4 mg/L</b><i style="--v:.125"></i></div><div class="v now"><b>3.2 mg/L</b><i style="--v:1"></i></div><div class="d"><b>×8</b></div>
+    <div class="k">淬灭 pH</div><div class="v same"><b>2.9</b></div><div class="v same"><b>2.8</b></div><div class="d flat">几乎没变</div>
+    <div class="k">常规 UHPLC-UV</div><div class="v same"><b>无可报告的未知杂质</b></div><div class="v same"><b>无可报告的未知杂质</b></div><div class="d flat">一样：都看不见</div>
+    <div class="k">痕量亚硝胺筛查</div><div class="v"><b>没做过</b></div><div class="v now"><b>约 0.52 ppm 处有信号</b></div><div class="d">没有基线可比</div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>变了的两件事，各自对上一种原料</h3>
+      <p>换成回收 DMF，带来了<span class="blue">胺</span>（DMA 升到 12 倍以上）。少洗一次，留下了<span class="ochre">亚硝酸根</span>（升到 8 倍）。生成亚硝胺需要的正是这两样，再加上酸。<span class="tag fact">案例</span></p>
+    </div>
+    <div class="card">
+      <h3>没变的 pH 才是底色</h3>
+      <p>2.8 和 2.9 都落在仲胺亚硝化最快的那段 pH 里（见「速率」一章）。pH 不是这次的变量，它是一扇一直开着的门。<span class="tag infer">推断</span></p>
+    </div>
+    <div class="card">
+      <h3>两个「没看见」，都不等于「没有」</h3>
+      <p>UHPLC-UV 的定量限约 500 ppm，比限度高 1250 倍，看不见亚 ppm 的东西很正常。旧工艺则从来没做过痕量筛查。所以「旧工艺没问题」这句话，目前没有数据支持。<span class="tag todo">待检验</span></p>
+    </div>
+    <div class="card">
+      <h3>含量 99.70%，为什么照样放行</h3>
+      <p>标准只要求含量 ≥ 99.5%，等于给「其他成分」留了 5000 ppm 的余地。11.8 mg/L 的 DMA 折合约 12.5 ppm（按 DMF 密度 0.944 g/mL），只占这块余地的四百分之一。含量这项指标对它是盲的。<span class="tag mine">补充</span></p>
+    </div>
+  </div>
+
+  <div class="two">
+    <div>
+      <h3>限度是怎么来的</h3>
+      <div class="boxed">
+        <div class="eq">NDMA：<span class="frac"><span>96 ng/天</span><span>0.240 g/天</span></span> = 400 ng/g = <strong>0.40 ppm</strong></div>
+        <div class="eq">NDEA：<span class="frac"><span>26.5 ng/天</span><span>0.240 g/天</span></span> ≈ 110 ng/g = <strong>0.11 ppm</strong></div>
+      </div>
+      <p class="note">可接受摄入量（AI）除以最大日剂量 240 mg。<span class="tag fact">案例</span></p>
+    </div>
+    <div>
+      <h3>0.52 ppm 意味着什么</h3>
+      <p>如果它确实是 NDMA：0.52 µg/g × 0.240 g = <strong>125 ng/天</strong>，是可接受摄入量的 1.3 倍。如果它其实是 NDEA，那就是限度的 4.7 倍。同一个数字，身份不同，严重程度差出几倍，所以要先认身份，再谈超没超。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 贰 -->
+<section id="flow" aria-labelledby="h-flow">
+  <div class="head"><span class="seal">贰</span><h2 id="h-flow">工艺长卷：从投料到放行</h2><span class="en">The whole process</span></div>
+  <p>把这条线从头画到尾，连同厂外那一段溶剂回收。点任何一站，右边会写出那里发生的化学、案例给的证据，以及摘要打算在那里取的样。</p>
+  <div class="bar">
+        <div class="chips" role="group" aria-label="工艺版本">
+          <button type="button" data-mode="old" aria-pressed="false">历史工艺 · 原生 DMF · 三洗</button>
+          <button type="button" data-mode="now" aria-pressed="true">现行工艺 · 回收 DMF · 两洗</button>
+        </div>
+        <button type="button" class="toggle" id="flag-toggle" aria-pressed="true">取样点</button>
+      </div>
+      <div class="flow-wrap"><svg class="flow" id="flow-svg" viewBox="0 0 1400 610" role="img" aria-label="Nerivartan 四唑步骤的工艺流程图：投料、成环、亚硝酸钠淬灭、水洗、结晶、过滤干燥、放行，以及外包的 DMF 回收回路"></svg></div>
+      <div class="legend">
+        <span><i class="dma"></i>二甲胺 DMA</span><span><i class="no2"></i>亚硝酸根</span><span><i class="ndma"></i>NDMA（假说）</span><span><i class="gas"></i>N₂、N₂O</span><span><i style="background:var(--ink-pale)"></i>用过的 DMF</span>
+      </div>
+  <p class="note">粒子是按「淬灭釜里原位生成，水洗清除不足」这个假说画的，数目只表示相对多少，不是实测浓度。它是不是事实，要到「断案」一章再说。</p>
+  <div class="panel wide" id="flow-panel" aria-live="polite"></div>
+</section>
+
+<!-- 叁 -->
+<section id="chem" aria-labelledby="h-chem">
+  <div class="head"><span class="seal">叁</span><h2 id="h-chem">反应全谱：三条河，两处汇流</h2><span class="en">Every reaction in the pot</span></div>
+  <p>釜里的化学可以看成三条河。一条是做药的主线，腈和叠氮长成四唑；一条是淬灭剂，亚硝酸钠在酸里变成亚硝化物种；一条是溶剂，DMF 裂出二甲胺。亚硝化物种本来只该和残余的叠氮相遇。DMA 混进来以后，同一把刀多砍了一个对象。</p>
+  <div class="stage even">
+    <div>
+      <div class="bar"><span class="bar-title">反应地图 · 点圆角标签，右边演示那一步</span></div>
+      <svg class="map" id="rx-map" viewBox="0 0 840 500" role="group" aria-label="反应地图"></svg>
+      <div class="p-eq" id="rx-eq"></div>
+      <p class="note" id="rx-note"></p>
+    </div>
+    <div>
+      <div class="bar"><span class="bar-title" id="rx-title"></span></div>
+      <div class="c3d"><canvas id="rx-canvas" tabindex="0" aria-label="三维反应演示，可拖动旋转，方向键也可旋转"></canvas><span class="corner">拖动旋转</span></div>
+      <div class="player">
+        <button type="button" id="rx-play" aria-label="播放或暂停">❚❚</button>
+        <input type="range" id="rx-seek" min="0" max="4" step="0.001" value="0" aria-label="反应进度">
+      </div>
+      <ol class="caps" id="rx-caps"></ol>
+      <div class="legend"><span><i></i>碳</span><span><i class="n"></i>氮</span><span><i class="o"></i>氧</span><span><i class="h"></i>氢</span><span><i class="dash"></i>正在形成或断开的键</span></div>
+      <p class="note">坐标由标准键长键角搭出，帧与帧之间做插值。它是机理的示意，不是量化计算出来的反应路径。</p>
+    </div>
+  </div>
+
+  <div class="two">
+    <div>
+      <h3>祸根这条线，画成结构式</h3>
+      <svg class="sk" id="sk-ndma" viewBox="0 0 660 190" role="img" aria-label="DMF 分解成二甲胺，二甲胺在酸性亚硝酸条件下生成 NDMA"></svg>
+      <p class="note">与案例图 1 是同一条路：溶剂 → 仲胺 → 亚硝胺。</p>
+    </div>
+    <div>
+      <h3>主线：腈长成四唑</h3>
+      <svg class="sk" id="sk-tet" viewBox="0 0 660 190" role="img" aria-label="芳基腈与叠氮根环加成生成 5-取代 1H-四唑"></svg>
+      <p class="note">Ar 代表药物分子的联苯骨架。四唑环与案例图 2 相同。</p>
+    </div>
+  </div>
+
+  <h3>全部反应式</h3>
+  <div class="rxlist">
+    <div>
+      <h4>设计之内：做药，再把叠氮销毁</h4>
+      <ol>
+        <li><b>一</b><strong>四唑成环（[3+2] 环加成）</strong><div class="eq">Ar–C≡N + NaN₃ → Ar–CN₄⁻ Na⁺ →(H⁺) Ar–CN₄H</div><span>DMF 中加热，常加路易斯酸或铵盐活化腈基。叠氮化钠过量，反应完釜里还剩 N₃⁻。四唑 N–H 的 pKa 约 4.5–4.9。</span></li>
+        <li><b>二</b><strong>残余叠氮遇酸</strong><div class="eq">N₃⁻ + H⁺ ⇌ HN₃　（pKa 4.7）</div><span>叠氮酸沸点 37 °C，易挥发、剧毒、易爆。这是非淬灭不可的原因。</span></li>
+        <li><b>三</b><strong>亚硝酸钠遇酸</strong><div class="eq">NO₂⁻ + H⁺ ⇌ HNO₂　（pKa ≈ 3.3）</div><span>pH 2.8 时，大约四分之三的亚硝酸根已经变成 HNO₂。</span></li>
+        <li><b>四</b><strong>亚硝化物种</strong><div class="eq">2 HNO₂ ⇌ N₂O₃ + H₂O</div><div class="eq">HNO₂ + H⁺ ⇌ H₂O–NO⁺ ⇌ NO⁺ + H₂O</div><span>pH 2–4 以 N₂O₃ 为主，酸更强时 NO⁺ 的份额上升。若用盐酸酸化，还会有 HNO₂ + H⁺ + Cl⁻ ⇌ ClNO + H₂O，氯离子起催化作用。</span></li>
+        <li><b>五</b><strong>淬灭的本职</strong><div class="eq">HN₃ + HNO₂ → N₂↑ + N₂O↑ + H₂O</div><span>经亚硝酰叠氮 N₃–N=O 分解。实验室手册也写作 2 NaN₃ + 2 HNO₂ → 3 N₂ + 2 NO + 2 NaOH。两种写法都要求亚硝酸过量，才能把叠氮清干净。</span></li>
+      </ol>
+    </div>
+    <div>
+      <h4>设计之外：溶剂带来的支线</h4>
+      <ol>
+        <li><b>六</b><strong>DMF 水解</strong><div class="eq">HCON(CH₃)₂ + H₂O → HCOOH + (CH₃)₂NH</div><span>酸、碱催化，加热加快。</span></li>
+        <li><b>七</b><strong>DMF 热分解</strong><div class="eq">HCON(CH₃)₂ → CO + (CH₃)₂NH</div><span>接近沸点（153 °C）时缓慢发生，酸碱杂质会加速。蒸馏回收恰好提供这种条件。</span></li>
+        <li><b>八</b><strong>胺的酸碱平衡</strong><div class="eq">(CH₃)₂NH₂⁺ ⇌ (CH₃)₂NH + H⁺　（pKa 10.73）</div><span>pH 2.8 时游离胺只占约 10⁻⁸，其余都是不反应的铵离子。反应仍然能走，只是被这个比例拖慢。</span></li>
+        <li><b>九</b><strong>亚硝化：NDMA 的生成</strong><div class="eq">(CH₃)₂NH + N₂O₃ → (CH₃)₂N–N=O + HNO₂</div><div class="eq">速率 = k [(CH₃)₂NH] [HNO₂]²</div><span>对亚硝酸是二级：N₂O₃ 要两分子 HNO₂ 才凑得出来。</span></li>
+        <li><b>十</b><strong>亚硝酸自身分解</strong><div class="eq">3 HNO₂ → HNO₃ + 2 NO + H₂O</div><div class="eq">2 NO + O₂ → 2 NO₂　　NO + NO₂ ⇌ N₂O₃</div><span>淬灭放出的氮氧化物在釜顶空间里仍是亚硝化试剂，通风和氮气吹扫有用。</span></li>
+      </ol>
+    </div>
+    <div>
+      <h4>补救：把多余的亚硝酸清掉</h4>
+      <ol>
+        <li><b>十一</b><strong>氨基磺酸</strong><div class="eq">HNO₂ + H₂NSO₃H → N₂↑ + H₂SO₄ + H₂O</div><span>快，产物只有氮气和硫酸，工艺上最常用。</span></li>
+        <li><b>十二</b><strong>抗坏血酸</strong><div class="eq">C₆H₈O₆ + 2 HNO₂ → C₆H₆O₆ + 2 NO + 2 H₂O</div><span>把亚硝酸还原成 NO。有氧时 NO 会重新变回亚硝化物种，更适合用在分析稀释液里。</span></li>
+        <li><b>十三</b><strong>尿素</strong><div class="eq">CO(NH₂)₂ + 2 HNO₂ → CO₂ + 2 N₂ + 3 H₂O</div><span>便宜，但比前两种慢。</span></li>
+      </ol>
+    </div>
+    <div>
+      <h4>进了人体之后：限度为什么是纳克级</h4>
+      <ol>
+        <li><b>十四</b><strong>代谢活化</strong><div class="eq">(CH₃)₂N–NO →(CYP2E1) HOCH₂–N(CH₃)–NO</div><div class="eq">→ HCHO + CH₃–N=N–OH → CH₃–N₂⁺</div><span>NDMA 本身不直接损伤 DNA。肝脏的 CYP2E1 在甲基上加一个羟基，分子随即散架，放出甲基重氮离子，把甲基接到 DNA 碱基上（如 O⁶-甲基鸟嘌呤）。这是它致突变、致癌的化学基础。</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- 肆 -->
+<section id="mol" aria-labelledby="h-mol">
+  <div class="head"><span class="seal">肆</span><h2 id="h-mol">七个分子的小像</h2><span class="en">Shapes that matter</span></div>
+  <p>有几件事要看立体形状才明白：DMF 和 NDMA 的重原子为什么都在一个平面上，二甲胺的孤对电子朝哪边，N₂O₃ 中间那根键为什么一碰就断。</p>
+  <div class="stage">
+    <div>
+      <div class="chips" id="mol-chips" role="group" aria-label="选择分子"></div>
+      <div class="c3d tall"><canvas id="mol-canvas" tabindex="0" aria-label="三维分子模型，可拖动旋转，方向键也可旋转"></canvas><span class="corner">拖动旋转</span></div>
+      <div class="legend"><span><i></i>碳</span><span><i class="n"></i>氮</span><span><i class="o"></i>氧</span><span><i class="h"></i>氢</span><span class="pale">远处的原子画得淡，近处的浓</span></div>
+    </div>
+    <div class="panel" id="mol-panel" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- 伍 -->
+<section id="rate" aria-labelledby="h-rate">
+  <div class="head"><span class="seal">伍</span><h2 id="h-rate">速率之山</h2><span class="en">How fast, and where</span></div>
+  <p>仲胺的亚硝化有一条经典的速率式（Mirvish，1975）。把它画成一座山：横向是 pH，纵深是亚硝酸根浓度，高度是 NDMA 的生成速率。三个坐标同时在变，所以这里用立体的画法。</p>
+  <div class="two">
+    <div>
+      <div class="boxed">
+        <div class="eq">速率 = k · [DMA]<sub>总</sub> · [NO₂⁻]<sub>总</sub>² · g(pH)</div>
+        <div class="eq">g(pH) = <span class="frac"><span>4 K<sub>a</sub> [H⁺]</span><span>(K<sub>a</sub> + [H⁺])²</span></span></div>
+      </div>
+      <p class="note">k = 0.0017 M⁻²·s⁻¹（二甲胺，25 °C，水相，最适 pH 处）。g 在 pH = pK<sub>a</sub>(HNO₂) 时等于 1；这里按 Mirvish 实测的最适 pH 取 3.4。</p>
+    </div>
+    <div>
+      <h3>为什么是一道山脊</h3>
+      <p>pH 低，亚硝酸多，可是胺几乎全被质子化，没有孤对电子可用。pH 高，游离胺多了，亚硝酸却变回了不反应的亚硝酸根。两头都慢，中间最快。沿亚硝酸浓度方向，山一直往上爬：浓度每高 10 倍，速率高 100 倍。</p>
+    </div>
+  </div>
+  <div class="stage">
+    <div>
+      <div class="c3d tall"><canvas id="rate-canvas" tabindex="0" aria-label="速率曲面：pH、亚硝酸根浓度与 NDMA 生成速率，可拖动旋转"></canvas><span class="corner">拖动旋转 · 深一道墨线 = 速率差 10 倍</span></div>
+      <div class="legend"><span><i class="dash"></i>山脊：最适 pH 3.4</span><span><i class="n"></i>探针：下面滑块选的条件</span><span><i class="o"></i>淬灭结束时</span><span><i class="no2"></i>末次水洗后</span></div>
+    </div>
+    <div>
+      <div class="ctl">
+        <label><span>pH <output id="o-ph"></output></span><input type="range" id="i-ph" min="0" max="8" step="0.1" value="2.8"></label>
+        <label><span>亚硝酸根 <output id="o-no2"></output></span><input type="range" id="i-no2" min="-2" max="2" step="0.01" value="0.648"></label>
+        <label><span>反应液中的 DMA <output id="o-dma"></output></span><input type="range" id="i-dma" min="0.5" max="20" step="0.1" value="11.8"></label>
+        <label><span>停留时间 <output id="o-t"></output></span><input type="range" id="i-t" min="5" max="480" step="5" value="60"></label>
+        <label><span>每千克 API 对应的反应液 <output id="o-v"></output></span><input type="range" id="i-v" min="2" max="20" step="0.5" value="8"></label>
+      </div>
+      <div class="chips" id="rate-presets" role="group" aria-label="预设条件">
+        <button type="button" data-p="quench">淬灭结束时（回推）</button>
+        <button type="button" data-p="washed">末次水洗后</button>
+        <button type="button" data-p="old">历史工艺的 DMA</button>
+        <button type="button" data-p="hot">加料中，假设 30 mM</button>
+      </div>
+      <div class="readout">
+        <div><span>相对山脊处</span><b id="r-g"></b></div>
+        <div><span>生成速率</span><b id="r-rate"></b></div>
+        <div><span>折合 API 中的 NDMA</span><b id="r-ppm" class="hot"></b></div>
+      </div>
+      <p class="verdict" id="r-verdict"></p>
+    </div>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3>pH 2.8 和 2.9 是同一个地方</h3>
+      <p>按这条式子，pH 2.9 的速率是山脊处的 73%，pH 2.8 是 64%。两种工艺都站在山脊旁边。pH 解释不了新旧工艺的差别，但没有它，NDMA 根本生成不了。<span class="tag infer">推断</span></p>
+    </div>
+    <div class="card">
+      <h3>平方项决定了「在哪里生成」</h3>
+      <p>按水洗数据回推，淬灭结束时亚硝酸根约 4.5 mM；末次水洗后是 0.07 mM（3.2 mg/L）。两处的速率相差约 4000 倍，加料过程中的瞬时浓度还会更高。所以 NDMA 若是原位生成的，主要生成在淬灭釜里，不在水洗之后。<span class="tag infer">推断</span></p>
+    </div>
+    <div class="card">
+      <h3>量级够不够，是个开着的问题</h3>
+      <p>按默认这组数（DMA 11.8 mg/L，4.5 mM，1 小时，8 L/kg），只能生成约 0.012 ppm，比 0.52 ppm 少四十倍左右。瞬时亚硝酸浓度高出六七倍就能补上这个差距；釜内新生成的 DMA、更长的停留、氯离子催化也都可以。但它同样可能说明，有一部分 NDMA 是随溶剂带进来的。动力学给不出答案，它只告诉我们该去测什么。<span class="tag mine">补充</span></p>
+    </div>
+  </div>
+  <p class="note">这是稀水溶液、25 °C 的动力学。真实体系是 DMF、水和有机相的混合物，温度不同，还有卤离子催化。这里只取量级和趋势，不是预测值。「每千克 API 对应 8 L 反应液」是为了换算随手取的假设，案例没有给。</p>
+</section>
+
+<!-- 陆 -->
+<section id="wash" aria-labelledby="h-wash">
+  <div class="head"><span class="seal">陆</span><h2 id="h-wash">水洗与物料账</h2><span class="en">Purge and mass balance</span></div>
+  <p>水洗这一步没有新反应，只有稀释和分配。案例给的两个亚硝酸根数字，正好够算出一次水洗的力气。</p>
+  <div class="two">
+    <div>
+      <h3>一洗约等于八分之一</h3>
+      <div class="plot"><svg class="chart" id="wash-chart" viewBox="0 0 560 330" role="img" aria-label="亚硝酸根浓度随水洗次数下降的对数图"></svg></div>
+      <div class="legend"><span><i style="background:var(--ink-soft)"></i>历史工艺实测</span><span><i class="ndma"></i>现行工艺实测</span><span><i class="ring" style="border-color:var(--ink-pale)"></i>按 8 倍回推</span></div>
+      <p>三洗后 0.4 mg/L，两洗后 3.2 mg/L，只差一洗，差 8 倍。如果两种工艺淬灭后的起点相同、每一洗的效率也相同，往回推，淬灭结束时约 200 mg/L（4.5 mM）。<span class="tag infer">推断</span> 这是两个点连出来的线，要靠逐洗取样来验证。</p>
+    </div>
+    <div>
+      <h3>补上第三洗，够不够</h3>
+      <div class="ctl"><label><span>NDMA 每洗的清除倍数（未知，先假设）<output id="o-f"></output></span><input type="range" id="i-f" min="1" max="12" step="0.1" value="4"></label></div>
+      <div class="plot"><svg class="chart" id="purge-chart" viewBox="0 0 560 150" role="img" aria-label="补第三次水洗后 NDMA 的预计浓度与限度的比较"></svg></div>
+      <p class="verdict" id="purge-verdict"></p>
+      <p class="note">NDMA 与水互溶（log P ≈ −0.57），水洗理应带得走，但带走多少取决于它在有机相和水相之间怎么分配，这个数只能实测：在水洗前加标已知量的 NDMA，看每一洗后还剩多少。<span class="tag mine">补充</span></p>
+    </div>
+  </div>
+  <div class="two">
+    <div>
+      <h3>DMA 的账：够不够生成 0.52 ppm</h3>
+      <div class="ctl"><label><span>每千克 API 用的 DMF（假设）<output id="o-vd"></output></span><input type="range" id="i-vd" min="2" max="20" step="0.5" value="8"></label></div>
+      <div class="tbl-wrap"><table id="dma-table" aria-label="DMA 化学计量账"></table></div>
+    </div>
+    <div>
+      <h3>这笔账说明什么</h3>
+      <p>进料里的 DMA 远远过量。要解释 0.52 ppm，只需要其中千分之几变成 NDMA 并留在产品里。<span class="tag infer">推断</span></p>
+      <p>更要紧的是第二行：历史工艺的 DMA 虽然低于 1.0 mg/L，按化学计量仍然够超出限度几十倍。旧工艺要是真的干净，可能是靠第三洗在兜底，也可能只是没测过。这就是为什么旧批次的留样一定要用同一个方法检测。<span class="tag mine">补充</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- 柒 -->
+<section id="assay" aria-labelledby="h-assay">
+  <div class="head"><span class="seal">柒</span><h2 id="h-assay">看不见的 0.52</h2><span class="en">Confirming identity and amount</span></div>
+  <p>筛查只说「那里有东西」。要回答它是不是 NDMA、到底多少，方法得换。</p>
+  <div class="plot"><svg class="chart" id="ladder-chart" viewBox="0 0 1100 190" role="img" aria-label="浓度标尺：UV 定量限 500 ppm，筛查信号 0.52 ppm，NDMA 限度 0.40 ppm，NDEA 限度 0.11 ppm，确证方法需要的定量限 0.04 至 0.12 ppm"></svg></div>
+  <div class="cards">
+    <div class="card">
+      <h3>常规 UV 为什么看不见</h3>
+      <ul>
+        <li>浓度上差 1250 倍：定量限 500 ppm，限度 0.40 ppm。</li>
+        <li>NDMA 分子小，紫外吸收集中在 230 nm 附近且不强，在色谱上保留也弱，容易埋在溶剂峰和基质里。</li>
+        <li>UV 只给保留时间和峰面积，不给「它是谁」。</li>
+      </ul>
+      <p><span class="tag fact">案例</span> 两种工艺的 UV 结果相同，所以它也分不出新旧工艺。</p>
+    </div>
+    <div class="card">
+      <h3>确证方法：LC-MS/MS，同位素稀释</h3>
+      <ul>
+        <li>样品溶在加了亚硝酸清除剂的稀释液里，低温、避光，防止前处理时现生成。</li>
+        <li>反相色谱把 NDMA 和残留 DMF、API 主峰分开；主峰切到废液，不进质谱。</li>
+        <li>正离子模式（APCI 或 ESI），多反应监测。</li>
+        <li>定量限做到限度的 10%–30%（0.04–0.12 ppm）以下，至少不高于 0.40 ppm。</li>
+      </ul>
+      <p><span class="tag fact">案例</span> 摘要里已经写明：对照品、同位素内标、定量限 ≤ 0.40 ppm。</p>
+    </div>
+    <div class="card">
+      <h3>凭什么说「它就是 NDMA」</h3>
+      <ul>
+        <li>保留时间与 NDMA 对照品一致。</li>
+        <li>两对离子（定量 + 定性）的比值与对照品一致。</li>
+        <li>与同位素内标 NDMA-d₆ 共流出。</li>
+        <li>加标回收合格，标准加入法结果一致。</li>
+        <li>用第二种原理不同的方法复核：高分辨质谱的精确质量 75.0553。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="two">
+    <div>
+      <h3>监测的离子</h3>
+      <div class="tbl-wrap"><table aria-label="多反应监测离子对">
+        <thead><tr><th>化合物</th><th>母离子 [M+H]⁺</th><th>子离子</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td>NDMA</td><td>75.1</td><td>43.1</td><td>定量</td></tr>
+          <tr><td>NDMA</td><td>75.1</td><td>58.1</td><td>定性确认</td></tr>
+          <tr><td>NDMA-d₆</td><td>81.1</td><td>46.1</td><td>同位素内标</td></tr>
+          <tr><td>NDEA</td><td>103.1</td><td>75.1 / 47.1</td><td>顺带筛查</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">文献中常用的离子对，具体数值以所用仪器的优化结果为准。顺带看 NDEA，是因为回收商处理多家客户的溶剂，胺的种类不可知，而 NDEA 的限度只有 0.11 ppm。<span class="tag mine">补充</span></p>
+      <h3>防假象的几件小事</h3>
+      <ul class="steps">
+        <li>同一份样品，稀释液加与不加清除剂各做一次。加了以后读数下降，说明前处理时在现生成。</li>
+        <li>含亚硝酸根和胺的样品不走高温进样口；若用气相法，必须有液相法交叉验证。</li>
+        <li>报告 DMF 与 NDMA 的色谱分离度。</li>
+        <li>试剂空白要做全：实验室自己的 DMF、滤膜、手套都可能带入 NDMA。</li>
+      </ul>
+    </div>
+    <div>
+      <h3>一个专属于这个案子的陷阱：DMF 的同位素峰</h3>
+      <p>DMF 正是工艺溶剂，产品里难免残留。质子化的 DMF 是 m/z 74.0600，它含一个 ¹⁵N 的同位素峰落在 <strong>75.0571</strong>，离 NDMA 的 <strong>75.0553</strong> 只差 0.0018。分辨率不够、色谱又没分开的话，两个峰会并成一个。<span class="tag mine">补充</span></p>
+      <div class="ctl">
+        <label><span>质谱分辨率 R <output id="o-r"></output></span><input type="range" id="i-r" min="3.7" max="5.15" step="0.01" value="4"></label>
+        <label><span>API 中残留的 DMF <output id="o-d"></output></span><input type="range" id="i-d" min="0" max="880" step="10" value="150"></label>
+      </div>
+      <div class="chips" role="group" aria-label="样品里是否真有 NDMA">
+        <button type="button" id="ndma-on" aria-pressed="true">样品里真有 0.52 ppm NDMA</button>
+        <button type="button" id="ndma-off" aria-pressed="false">样品里其实没有 NDMA</button>
+      </div>
+      <div class="plot"><svg class="chart" id="hrms-chart" viewBox="0 0 600 300" role="img" aria-label="m/z 75.05 附近的高分辨质谱：NDMA 与 DMF 的两个同位素峰"></svg></div>
+      <div class="legend"><span><i class="ndma"></i>NDMA 75.0553</span><span><i class="dma"></i>DMF（¹⁵N）75.0571</span><span><i class="no2"></i>DMF（¹³C）75.0634</span><span><i></i>仪器实际看到的合峰</span></div>
+      <p class="verdict" id="hrms-verdict"></p>
+      <p class="note">假设两者完全共流出、电离响应相同，这在真实样品里并不成立，所以这张图只说明量级：残留 DMF 的限度是 880 ppm（ICH Q3C），而一百多 ppm 的 DMF 就足以在低分辨下凑出 0.5 ppm 级别的假信号。真实方法靠色谱分离、离子对的选择性和足够的分辨率三重保险。筛查用的是什么方法，案例没有说。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 捌 -->
+<section id="judge" aria-labelledby="h-judge">
+  <div class="head"><span class="seal">捌</span><h2 id="h-judge">断案：证据、推断、待检验</h2><span class="en">What we know, what we think, what to test</span></div>
+  <p>摘要里有一句话很要紧：筛查既没有认出这个峰，也没有定出它的浓度。先把手里的材料按分量分开摆。</p>
+  <div class="trio">
+    <div>
+      <h3><span class="tag fact">案例</span> 数据直接支持的</h3>
+      <ul>
+        <li>筛查在约 0.52 ppm 处有信号，身份未定。</li>
+        <li>回收 DMF（R-21）的 DMA 为 11.8 mg/L，原生 DMF 低于 1.0。</li>
+        <li>水洗从三次减到两次；末次水洗后亚硝酸根 0.4 → 3.2 mg/L。</li>
+        <li>淬灭 pH 2.9 与 2.8，两种工艺几乎相同。</li>
+        <li>UHPLC-UV 在两种工艺下结果相同，定量限 500 ppm。</li>
+        <li>回收商共用设备，批次追溯不完整。</li>
+        <li>历史工艺没有做过痕量筛查。</li>
+      </ul>
+    </div>
+    <div>
+      <h3><span class="tag infer">推断</span> 化学上说得通的</h3>
+      <ul>
+        <li>信号最可能是 NDMA：前体、试剂、酸度三样齐全。</li>
+        <li>若是原位生成，主要发生在淬灭釜里。</li>
+        <li>少一次水洗，清除就少一轮。</li>
+        <li>回收蒸馏保留了 DMA，或者在不断产生新的 DMA。</li>
+        <li>如果确是 0.52 ppm 的 NDMA，就超过了 0.40 ppm 的限度。</li>
+      </ul>
+    </div>
+    <div>
+      <h3><span class="tag todo">待检验</span> 现在答不了的</h3>
+      <ul>
+        <li>这个峰到底是什么，准确浓度多少。</li>
+        <li>是在釜里生成的，还是随溶剂带进来的。</li>
+        <li>旧工艺的批次里有没有 NDMA。</li>
+        <li>每一洗对 NDMA 的清除倍数。</li>
+        <li>成环时釜内的 DMF 是否也在降解出 DMA。</li>
+        <li>有没有别的亚硝胺，比如 NDEA。</li>
+        <li>干燥和贮存期间它会不会继续长。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>五种说法，各自预言不同的图案</h3>
+  <p>每一种解释都对「沿工艺逐点取样会看到什么」和「2×2 对照实验会得到什么」给出不同的预言。选一种说法，看它预言的样子。</p>
+  <div class="chips" id="hyp-chips" role="group" aria-label="选择假说"></div>
+  <div class="stage even">
+    <div>
+      <div class="bar"><span class="bar-title">沿工艺逐点取样，NDMA 的预期形状（不是数据）</span></div>
+      <div class="plot"><svg class="chart" id="hyp-chart" viewBox="0 0 600 300" role="img" aria-label="所选假说下，各取样点 NDMA 的预期相对水平"></svg></div>
+      <div class="legend" id="hyp-legend"></div>
+      <div class="bar"><span class="bar-title">2×2 对照实验的预期结果，外加第五组</span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:1.2rem 2.4rem;align-items:flex-end">
+        <div class="grid22" id="hyp-grid" aria-label="2×2 实验预期"></div>
+        <div class="grid22" id="hyp-fifth" style="grid-template-columns:minmax(0,1fr);max-width:11rem" aria-label="第五组实验预期"></div>
+      </div>
+      <p class="note">圆越大越浓，预期的 NDMA 越高。2×2 能把「溶剂的效应」和「水洗的效应」拆开，但甲和乙在 2×2 里长得几乎一样。分开它们靠两件事：淬灭之前就取样，以及第五组，用原生 DMF 加标 DMA 到 11.8 mg/L。<span class="tag mine">补充</span></p>
+    </div>
+    <div class="panel" id="hyp-panel" aria-live="polite"></div>
+  </div>
+
+  <h3>哪个实验能裁决哪种说法</h3>
+  <div class="tbl-wrap"><table class="mx" aria-label="实验与假说对照表">
+    <thead><tr><th>实验</th><th>出处</th><th class="c">甲<br>原位生成</th><th class="c">乙<br>溶剂带入</th><th class="c">丙<br>清除不足</th><th class="c">丁<br>后期生成</th><th class="c">戊<br>假象或别的</th></tr></thead>
+    <tbody>
+      <tr><td>LC-MS/MS 确证留样，现行批和历史批都测</td><td><span class="tag fact">摘要</span></td><td class="c"><b class="m">○</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="y">●</b></td></tr>
+      <tr><td>原生与回收 DMF 中的 NDMA、DMA</td><td><span class="tag fact">摘要</span></td><td class="c"><b class="m">○</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="m">○</b></td></tr>
+      <tr><td>淬灭前后、每次水洗后的 NDMA</td><td><span class="tag fact">摘要</span></td><td class="c"><b class="y">●</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="n">·</b></td></tr>
+      <tr><td>2×2 对照：溶剂来源 × 水洗次数</td><td><span class="tag fact">摘要</span></td><td class="c"><b class="m">○</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="n">·</b></td></tr>
+      <tr><td>回收商的批次与设备追溯记录</td><td><span class="tag fact">摘要</span></td><td class="c"><b class="n">·</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="m">○</b></td></tr>
+      <tr><td>第五组：原生 DMF 加标 DMA</td><td><span class="tag mine">补充</span></td><td class="c"><b class="y">●</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="m">○</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td></tr>
+      <tr><td>清除剂对照，加高分辨或正交方法</td><td><span class="tag mine">补充</span></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="y">●</b></td></tr>
+      <tr><td>同一批留样隔时间复测</td><td><span class="tag mine">补充</span></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="n">·</b></td><td class="c"><b class="y">●</b></td><td class="c"><b class="m">○</b></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note"><b class="red">●</b> 能直接判定　○ 有帮助　· 基本无关。这几种说法并不互斥，最后的答案很可能是其中两三种叠在一起。</p>
+
+  <h3>先后顺序</h3>
+  <ol class="steps">
+    <li><strong>先认身份和浓度。</strong>确证留样，同时做防假象的对照。没有这一步，后面全是空谈。</li>
+    <li><strong>再查溶剂。</strong>R-21 和其他回收批里有没有现成的 NDMA，有多少 DMA，回收商那边它走过哪些罐。</li>
+    <li><strong>沿工艺逐点取样。</strong>淬灭前、淬灭后、每一洗之后、湿滤饼、成品，画出 NDMA、DMA、亚硝酸根三条线。</li>
+    <li><strong>用对照实验把因素拆开。</strong>溶剂来源 × 水洗次数，再加原生 DMF 加标 DMA 的第五组。</li>
+    <li><strong>最后看时间。</strong>留样隔一段时间复测，确认它不再增长。</li>
+  </ol>
+</section>
+
+<!-- 玖 -->
+<section id="control" aria-labelledby="h-control">
+  <div class="head"><span class="seal">玖</span><h2 id="h-control">对策：不让三样东西同时在场</h2><span class="en">Control strategy</span></div>
+  <p>亚硝胺要三样东西凑在一起：可亚硝化的胺、亚硝化试剂、足够的时间。对策不指望哪一道关单独挡住，而是每一关各削掉一样。</p>
+  <div class="gates">
+    <div class="gate"><span class="g-no">关一 · 溶剂</span><h3>回收 DMF 先过检验再进釜</h3>
+      <dl>
+        <dt>做法</dt><dd>回收 DMF 的质量标准加上 DMA、NDMA、NDEA 和亚硝酸根。每批检验，合格才放行。回收商用专用设备，或者清洁后经过验证；每批附带走过哪些罐的谱系。只回收这一步的 DMF，也只回用到这一步。调查期间四唑步骤暂用原生 DMF，R-21 隔离。</dd>
+        <dt>标准</dt><dd>DMA ≤ 1.0 mg/L，这是历史工艺的已知水平，等加标实验出来再调。NDMA 不得检出。</dd>
+        <dt>道理</dt><dd>速率对 DMA 是一级，降到十二分之一，生成也降到十二分之一。同时堵住「带入」这条路。</dd>
+        <dt>代价</dt><dd>每批多一组检测。专用设备会抬高回收费用，但 80% 的溶剂回收大体还划算。</dd>
+      </dl>
+    </div>
+    <div class="gate"><span class="g-no">关二 · 淬灭</span><h3>让胺见不到亚硝酸，或者见得越短越好</h3>
+      <dl>
+        <dt>做法</dt><dd>首选改顺序：先分相，让含产品的有机相离开，再在含叠氮的水相里淬灭。必须同釜淬灭时，按残余叠氮的实测量投亚硝酸钠，用淀粉–碘化钾试纸判终点；低温，限定停留时间；淬灭完立即加氨基磺酸清掉余量。</dd>
+        <dt>标准</dt><dd>亚硝酸钠过量有上限。温度、时间写进批记录并设限。清除后亚硝酸根检测为阴性，才进入水洗。</dd>
+        <dt>道理</dt><dd>速率对亚硝酸是二级，过量减半，速率降到四分之一。清除剂让胺和亚硝酸同时在场的时间归零。</dd>
+        <dt>代价</dt><dd>改顺序要重新验证并申报变更。同釜方案只多一种便宜的辅料和一次中控。</dd>
+      </dl>
+    </div>
+    <div class="gate"><span class="g-no">关三 · 水洗</span><h3>把第三洗请回来，并用数据说话</h3>
+      <dl>
+        <dt>做法</dt><dd>经变更控制恢复第三次水洗。用加标实验测出每一洗对 NDMA 和亚硝酸根的清除倍数，再按数据定水洗次数和用水量。</dd>
+        <dt>标准</dt><dd>末次水洗液亚硝酸根 ≤ 0.5 mg/L，历史工艺是 0.4 mg/L。</dd>
+        <dt>道理</dt><dd>已经生成的 NDMA，只有这一步能带走。</dd>
+        <dt>代价</dt><dd>每批多一次水洗的工时和废水。</dd>
+      </dl>
+    </div>
+    <div class="gate"><span class="g-no">关四 · 放行</span><h3>NDMA 写进质量标准，每批都测</h3>
+      <dl>
+        <dt>做法</dt><dd>用经验证的 LC-MS/MS 每批检验 NDMA。UHPLC-UV 继续管常规有关物质，两种方法各管各的。</dd>
+        <dt>标准</dt><dd>NDMA ≤ 0.40 ppm。内控警戒线取限度的 30%，即 0.12 ppm。方法定量限不高于限度的 10%，即 0.04 ppm。</dd>
+        <dt>道理</dt><dd>前三关降低概率，这一关保证漏网的批次出不了厂。</dd>
+        <dt>代价</dt><dd>仪器和方法验证是最大的一笔投入。可以先委托有资质的实验室，批量上来再自建。</dd>
+      </dl>
+    </div>
+    <div class="gate"><span class="g-no">关五 · 体系</span><h3>别让下一次「小改动」再溜过去</h3>
+      <dl>
+        <dt>做法</dt><dd>「水洗三次改两次」这类改动必须走变更控制和亚硝胺风险评估（ICH Q9、M7）。回收商定期审计，质量协议写明设备、清洁和追溯要求。已放行的批次做风险评估，并按法规与监管机构沟通。</dd>
+        <dt>道理</dt><dd>这次的两个变化，换溶剂来源和减水洗，单看都像是合理的降本，合在一起才出事。</dd>
+      </dl>
+    </div>
+  </div>
+
+  <h3>叠几道关，能降到哪里</h3>
+  <p>下面是按速率式做的相对推演：DMA 一级，亚硝酸二级，时间一级，水洗按假设的清除倍数。它建立在「0.52 ppm 确是 NDMA」之上，并且结果取决于根因是哪一种，所以先选根因。</p>
+  <div class="stage even">
+    <div>
+      <div class="chips" id="stack-mode" role="group" aria-label="根因假设">
+        <button type="button" data-m="form" aria-pressed="true">若是淬灭时原位生成</button>
+        <button type="button" data-m="carry" aria-pressed="false">若是随回收溶剂带入</button>
+      </div>
+      <div class="stack" id="stack"></div>
+      <div class="ctl"><label><span>NDMA 每洗的清除倍数（假设）<output id="o-f2"></output></span><input type="range" id="i-f2" min="1" max="12" step="0.1" value="4"></label></div>
+    </div>
+    <div>
+      <div class="plot"><svg class="chart" id="stack-chart" viewBox="0 0 560 150" role="img" aria-label="叠加控制措施后 NDMA 的预计浓度"></svg></div>
+      <div class="p-eq" id="stack-eq"></div>
+      <p class="verdict" id="stack-verdict"></p>
+    </div>
+  </div>
+
+  <h3>怎么证明它一直有效</h3>
+  <ol class="steps">
+    <li><strong>工艺验证批。</strong>连续至少三批逐点取样，确认成品 NDMA 稳定低于限度的 10%–30%。</li>
+    <li><strong>三张控制图。</strong>进料 DMF 的 DMA、末次水洗液的亚硝酸根、成品的 NDMA，各设警戒限和行动限，持续画下去。</li>
+    <li><strong>变更即重评。</strong>溶剂来源、回收商、水洗次数、淬灭参数、批量，任何一项变动都触发重新评估。</li>
+    <li><strong>供应商。</strong>回收商定期审计；每批回收溶剂附谱系和检验报告。</li>
+    <li><strong>稳定性。</strong>留样长期考察，NDMA 不随时间增长。</li>
+  </ol>
+</section>
+
+<!-- 拾 -->
+<section id="notes" aria-labelledby="h-notes">
+  <div class="head"><span class="seal">拾</span><h2 id="h-notes">把握与出处</h2><span class="en">Sources and confidence</span></div>
+  <div class="two">
+    <div>
+      <h3>哪些是你的，哪些是我补的</h3>
+      <p>案情数据、限度计算、三种可能来源（釜内生成、溶剂带入、交叉污染）、LC-MS/MS 加对照品和同位素内标、比较两种 DMF、淬灭前后和逐洗取样、溶剂来源 × 水洗次数的对照实验、回收商追溯记录，这些都来自案例文件和你的摘要。</p>
+      <p>我补进去的：含量指标对 DMA 是盲的；NDMA 与 DMF 沸点几乎相同，蒸馏分不开；旧工艺的 DMA 按化学计量也够超标，所以要测历史留样；用速率式判断生成发生在哪一步，以及量级上的缺口；2×2 分不开「生成」和「带入」，要加淬灭前取样和加标 DMA 的第五组；残留 DMF 的同位素峰可能造成假阳性；干燥贮存期间的后期生成；按根因选择对策。</p>
+      <h3>这页里的假设</h3>
+      <ul class="refs">
+        <li>速率常数 k = 0.0017 M⁻²·s⁻¹ 和最适 pH 3.4 取自 Mirvish (1975) 的稀水溶液数据。</li>
+        <li>「每洗稀释 8 倍」由案例的两个亚硝酸根数字推出，前提是两种工艺起点和效率相同。</li>
+        <li>每千克 API 用 8 L DMF、NDMA 每洗清除 4 倍，是演示用的假设值，滑块可改。</li>
+        <li>同位素峰干扰按等摩尔等响应估算，只说明量级。</li>
+        <li>限度的 10% 与 30% 这两条线是亚硝胺控制里常见的做法，请以 Health Canada 现行指南的原文为准。</li>
+      </ul>
+    </div>
+    <div>
+      <h3>建议核对的文献</h3>
+      <p class="note">前七条是我凭记忆列的，引用之前请逐条查原文；后四条是案例文件自己的参考文献。</p>
+      <ol class="refs">
+        <li>Mirvish, S. S. Formation of N-Nitroso Compounds: Chemistry, Kinetics, and in Vivo Occurrence. <i>Toxicol. Appl. Pharmacol.</i> <b>1975</b>, <i>31</i>, 325–351.</li>
+        <li>Ashworth, I. W.; Dirat, O.; Teasdale, A.; Whiting, M. Potential for the Formation of N-Nitrosamines during the Manufacture of Active Pharmaceutical Ingredients: An Assessment of the Risk Posed by Trace Nitrite in Water. <i>Org. Process Res. Dev.</i> <b>2020</b>, <i>24</i>, 1629–1646.</li>
+        <li>López-Rodríguez, R.; McManus, J. A.; Murphy, N. S.; Ott, M. A.; Burns, M. J. Pathways for N-Nitroso Compound Formation: Secondary Amines and Beyond. <i>Org. Process Res. Dev.</i> <b>2020</b>, <i>24</i>, 1558–1585.</li>
+        <li>Yang, J.; Marzan, T. A.; Ye, W.; Sommers, C. D.; Rodriguez, J. D.; Keire, D. A. A Cautionary Tale: Quantitative LC-HRMS Analytical Procedures for the Analysis of N-Nitrosodimethylamine in Metformin. <i>AAPS J.</i> <b>2020</b>, <i>22</i>, 89.</li>
+        <li>Parr, M. K.; Joseph, J. F. NDMA Impurity in Valsartan and Other Pharmaceutical Products: Analytical Methods for the Determination of N-Nitrosamines. <i>J. Pharm. Biomed. Anal.</i> <b>2019</b>, <i>164</i>, 536–549.</li>
+        <li>Himo, F.; Demko, Z. P.; Noodleman, L.; Sharpless, K. B. Mechanisms of Tetrazole Formation by Addition of Azide to Nitriles. <i>J. Am. Chem. Soc.</i> <b>2002</b>, <i>124</i>, 12210–12216.</li>
+        <li>Burns, M. J.; Teasdale, A.; Elliott, E.; Barber, C. G. Controlling a Cohort: Use of Mirabilis-Based Purge Calculations to Understand Nitrosamine-Related Risk and Control Strategy Options. <i>Org. Process Res. Dev.</i> <b>2020</b>, <i>24</i>, 1531–1535.</li>
+        <li>案例文献 7：Wichitnithad, W. 等，亚硝化途径与根因综述，<i>Saudi Pharm. J.</i> <b>2023</b>, <i>31</i>, 295–311.</li>
+        <li>案例文献 8：Manchuri, K. M. 等，亚硝胺分析方法综述，<i>Chem. Res. Toxicol.</i> <b>2024</b>, <i>37</i>, 1456–1483.</li>
+        <li>案例文献 6：Golob, N. 等，痕量亚硝酸根与 NDMA 在制剂中的生成，<i>J. Pharm. Sci.</i> <b>2023</b>, <i>112</i>, 1277–1286.</li>
+        <li>案例文献 13：Chuang, Y.-H. 等，分析过程中人为生成亚硝胺，<i>Chemosphere</i> <b>2019</b>, <i>221</i>, 597–605.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>依据 CSU Chemistry Society《A Pernicious Manufacturing Problem》（Fall 2026 Case Competition）与摘要《Find Potential Nitrosamine Contamination in Nerivartan Manufacturing》制作。Nerivartan 和 CSU O.W.C.A. 制药都是案例虚构的。</p>
+  <p>竞赛规则要求记录 AI 的使用。这一页由 Claude 根据上述两份文件生成，里面的化学解释、估算和建议在用进提交材料之前，都需要你自己核对。</p>
+</footer>
+</div>
+
+<script src="geom.js"></script>
+<script src="ink3d.js"></script>
+<script src="page.js"></script>
+</body>
+</html>
